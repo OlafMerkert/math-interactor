@@ -40,6 +40,32 @@
 
 (defgeneric math-output (math-object stream))
 
+(defmethod math-output :before (math-object stream)
+  (when (typep math-object 'math-output-record)
+    (error "Cannot call math-output on output-records!")))
+
+(defgeneric center-offset (math-output-record))
+
+(defmethod center-offset ((math-output-record math-output-record))
+  (values (floor (rectangle-width math-output-record) 2)
+          (floor (rectangle-height math-output-record) 2)))
+
+(defclass math-output-record/with-center (math-output-record)
+  ((center-x :initform 0)
+   (center-y :initform 0)))
+
+(defmethod center-offset ((math-output-record math-output-record/with-center))
+  (values (slot-value math-output-record 'center-x)
+          (slot-value math-output-record 'center-y)))
+
+(clim-internals::defgeneric* (setf center-offset) (x y math-output))
+
+(clim-internals::defmethod* (setf center-offset)
+    (x y (math-output math-output-record/with-center))
+  (with-slots (center-x center-y) math-output
+    (setf center-x x
+          center-y y)))
+
 (defclass number-math-output-record (math-output-record
                                      standard-sequence-output-record)
   ())
@@ -49,7 +75,7 @@
                                         :math-object number)
     (princ number stream)))
 
-(defclass fraction-math-output-record (math-output-record
+(defclass fraction-math-output-record (math-output-record/with-center
                                        standard-sequence-output-record
                                        fraction)
   ())
@@ -74,8 +100,8 @@
 
 (defun align-output-records (records horizontal-align-fn vertical-align-fn
                              &optional (x-combinate (nth-arg 1)) (y-combinate x-combinate))
-  (let ((h-pos (funcall horizontal-align-fn (mapcar #'rectangle-width records) :horizontal))
-        (v-pos (funcall vertical-align-fn (mapcar #'rectangle-height records) :vertical)))
+  (let ((h-pos (funcall horizontal-align-fn records :horizontal))
+        (v-pos (funcall vertical-align-fn records :vertical)))
     (mapc (lambda (record h-pos v-pos)
             (multiple-value-bind (x y) (output-record-position record)
                 (setf (output-record-position record)
@@ -85,22 +111,28 @@
     ;; TODO return center coordinates??
     ))
 
-(defun centering-align (lengths direction)
-  (declare (ignore direction))
-  (let ((m (reduce #'max lengths)))
-    (mapcar (lambda (l) (/ (- m l) 2)) lengths)))
+(defun centering-align (records direction)
+  (let* ((offsets (mapcar (ecase direction
+                            (:horizontal (lambda (r) (nth-value 0 (center-offset r))))
+                            (:vertical   (lambda (r) (nth-value 1 (center-offset r)))))
+                          records))
+         ;; find the largest center offset.
+         (o (reduce #'max offsets)))
+    (mapcar (lambda (x) (- o x)) offsets)))
 
-(defun stacking-align (lengths direction)
-  (let ((position 0)
-        (offset (case direction
-                  (:vertical *math-vertical-spacing*)
-                  (:horizontal *math-horizontal-spacing*)
-                  (t 0))))
+(defun stacking-align (records direction)
+  (let ((lengths (mapcar (ecase direction
+                           (:horizontal #'rectangle-width)
+                           (:vertical   #'rectangle-height))
+                         records))
+        (position 0)
+        (offset (ecase direction
+                  (:vertical   *math-vertical-spacing*)
+                  (:horizontal *math-horizontal-spacing*))))
     (mapcar (lambda (l)
               (prog1 position
                 (incf position (+ l offset))))
             lengths)))
-
 
 (defmethod math-output ((fraction fraction) stream)
   (with-output-to-output-record (stream 'fraction-math-output-record new-record
@@ -110,16 +142,20 @@
             denominator (math-output (denominator fraction) stream))
       (stream-add-output-record stream numerator)
       (stream-add-output-record stream denominator)
-      ;; calculate dimensions
+      ;; calculate dimensions and move n/d in position
       (align-output-records (list numerator denominator)
                             #'centering-align
                             #'stacking-align)
+      ;; draw the line of the fraction at the appropriate place
       (multiple-value-bind (x y) (output-record-position new-record)
         (let* ((w (rectangle-width  new-record))
-               (h (rectangle-height new-record))
-               (middle (+ y (floor h 2) 1)))
+               (h (rectangle-height numerator))
+               (center (+ y h (floor *math-vertical-spacing* 2))))
           (draw-line* stream
-                      x middle (+ x w) middle))))))
+                      x center (+ x w) center)
+          ;; mark center offset
+          (setf (center-offset new-record)
+                (values (floor w 2) (- center y))))))))
 
 (defclass finite-sum ()
   ((summands :initarg :summands
@@ -197,13 +233,19 @@
 ;; TODO make this behave more nicely with other output to the stream.
 ;; TODO fresh-line does not take into account that math-output might
 ;; be higher than text.
-(defun stream-add-math-output (stream math-output &optional (move-cursor t))
+(defun stream-add-math-output (stream math-output
+                               &key (line-break nil) (move-cursor t))
   (stream-add-output-record stream math-output)
   (setf (output-record-position math-output) (stream-cursor-position stream))
-  (when move-cursor
-    (multiple-value-bind (x y) (stream-cursor-position stream)
-      (setf (stream-cursor-position stream)
-            (values (+ x (rectangle-width math-output) *math-horizontal-spacing*) y))))
+  (cond (line-break
+         (multiple-value-bind (x y) (stream-cursor-position stream)
+           (declare (ignore x))
+           (setf (stream-cursor-position stream)
+                 (values 0 (+ y (rectangle-height math-output))))))
+        (move-cursor
+         (multiple-value-bind (x y) (stream-cursor-position stream)
+           (setf (stream-cursor-position stream)
+                 (values (+ x (rectangle-width math-output) *math-horizontal-spacing*) y)))))
   math-output)
 
 
@@ -212,11 +254,11 @@
   (let ((numer 3182)
         (denom 326)
         (stream (get-frame-pane *application-frame* 'app)))
-    ;; TODO move cursor forward.
     (stream-add-math-output stream
                             (math-output (make-instance 'fraction
                                                         :denominator denom
-                                                        :numerator numer) stream))
+                                                        :numerator numer) stream)
+                            :line-break t)
     (stream-replay stream)))
 
 (define-math-interactor-command (com-sum :menu t :name "Summe anzeigen")
@@ -226,7 +268,8 @@
                             (math-output (make-instance 'finite-sum
                                                         :summands (list 1 2 3 4 5 6
                                                                         (make-instance 'fraction :numerator 17 :denominator 1329846)))
-                                         stream))
+                                         stream)
+                            :line-break t)
     (stream-replay stream)))
 
 (define-math-interactor-command (com-cf :menu t :name "Kettenbruch anzeigen")
@@ -235,5 +278,6 @@
     (stream-add-math-output stream
                             (math-output (make-instance 'finite-continued-fraction
                                                         :partial-quotients (list 1 2 3 4 5 6 7))
-                                         stream))
+                                         stream)
+                            :line-break t)
     (stream-replay stream)))

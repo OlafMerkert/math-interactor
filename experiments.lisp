@@ -1,6 +1,7 @@
 (defpackage :math-interactor
   (:nicknames :mi)
   (:use :clim-lisp :clim :ol :iterate)
+  (:shadow :numerator :denominator)
   (:export))
 
 (in-package :math-interactor)
@@ -49,37 +50,30 @@
     (princ number stream)))
 
 (defclass fraction-math-output-record (math-output-record
-                                       standard-sequence-output-record)
-  ((numerator   :initarg :numerator
-                :initform nil
-                :accessor numerator)
-   (denominator :initarg :denominator
-                :initform nil
-                :accessor denominator)))
+                                       standard-sequence-output-record
+                                       fraction)
+  ())
 
-
-(shadow 'numerator)
-(shadow 'denominator)
 
 (defclass fraction ()
   ((numerator   :initarg :numerator
-                :initform 0
+                :initform nil
                 :reader numerator)
    (denominator :initarg :denominator
-                :initform 1
+                :initform nil
                 :reader denominator))
   (:documentation "TODO"))
-
-(defun calc-offset (l1 l2)
-  (if (< l1 l2)
-      (values (/ (- l2 l1) 2) 0)
-      (values 0 (/ (- l1 l2) 2))))
 
 (defparameter *math-vertical-spacing* 5)
 (defparameter *math-horizontal-spacing* 5)
 
+(defun nth-arg (n)
+  "Build a function that simply returns it's NTH argument."
+  (lambda (&rest args)
+    (nth n args )))
+
 (defun align-output-records (records horizontal-align-fn vertical-align-fn
-                             &optional (x-combinate #'+) (y-combinate x-combinate))
+                             &optional (x-combinate (nth-arg 1)) (y-combinate x-combinate))
   (let ((h-pos (funcall horizontal-align-fn (mapcar #'rectangle-width records) :horizontal))
         (v-pos (funcall vertical-align-fn (mapcar #'rectangle-height records) :vertical)))
     (mapc (lambda (record h-pos v-pos)
@@ -121,12 +115,79 @@
                             #'centering-align
                             #'stacking-align)
       (multiple-value-bind (x y) (output-record-position new-record)
-        (let* ((w (rectangle-width new-record))
-               (h (rectangle-width new-record))
+        (let* ((w (rectangle-width  new-record))
+               (h (rectangle-height new-record))
                (middle (+ y (floor h 2) 1)))
           (draw-line* stream
-                      x middle (+ x w) middle)))
-)))
+                      x middle (+ x w) middle))))))
+
+(defclass finite-sum ()
+  ((summands :initarg :summands
+         :initform nil
+         :accessor summands)))
+
+(defclass finite-sum-math-output-record (math-output-record
+                                         standard-sequence-output-record
+                                         finite-sum)
+  ((operators :initarg :operators
+              :initform nil
+              :accessor operators)))
+
+(defclass operator-math-output-record (math-output-record
+                                       standard-sequence-output-record)
+  ())
+
+(defun insert-operators (arguments operators)
+  "Given '(a b c) and '(+ -), create the output '(a + b - c)."
+  (list* (first arguments)
+         (alternate operators (rest arguments))))
+
+
+(defmethod math-output ((finite-sum finite-sum) stream)
+  (with-output-to-output-record (stream 'finite-sum-math-output-record new-record
+                                        :math-object finite-sum)
+    (with-slots (summands operators) new-record
+      (setf summands
+            (mapcar (lambda (s) (aprog1 (math-output s stream)
+                             (stream-add-output-record stream it)))
+                    (summands finite-sum))
+            operators
+            (mapcar (ilambda (s)
+                      (with-new-output-record (stream 'operator-math-output-record new-operator)
+                        (princ #\+ stream)
+                        new-operator))
+                    (rest (summands finite-sum))))
+      (align-output-records (insert-operators summands operators)
+                            #'stacking-align
+                            #'centering-align))
+    new-record))
+
+(defclass finite-continued-fraction ()
+  ((partial-quotients :initarg :partial-quotients
+         :initform nil
+         :accessor partial-quotients)))
+
+(defun simple-cf-p (finite-continued-fraction)
+  (length=1 (partial-quotients finite-continued-fraction)))
+
+
+(defmethod math-output ((finite-continued-fraction finite-continued-fraction) stream)
+  (math-output
+   (if (simple-cf-p finite-continued-fraction)
+       (first #1=(partial-quotients finite-continued-fraction))
+       (make-instance
+        'finite-sum
+        :summands (list (first #1#)
+                        (make-instance
+                         'fraction
+                         :numerator 1
+                         :denominator
+                         (make-instance
+                          'finite-continued-fraction
+                          :partial-quotients (rest #1#))))))
+   stream))
+
+
 
 (define-math-interactor-command (com-output-test :menu t :name "Ausgabe testen")
     ()
@@ -153,8 +214,26 @@
         (stream (get-frame-pane *application-frame* 'app)))
     ;; TODO move cursor forward.
     (stream-add-math-output stream
-                              (math-output (make-instance 'fraction
-                                                          :denominator denom
-                                                          :numerator numer) stream))
+                            (math-output (make-instance 'fraction
+                                                        :denominator denom
+                                                        :numerator numer) stream))
     (stream-replay stream)))
 
+(define-math-interactor-command (com-sum :menu t :name "Summe anzeigen")
+    ()
+  (let ((stream (get-frame-pane *application-frame* 'app)))
+    (stream-add-math-output stream
+                            (math-output (make-instance 'finite-sum
+                                                        :summands (list 1 2 3 4 5 6
+                                                                        (make-instance 'fraction :numerator 17 :denominator 1329846)))
+                                         stream))
+    (stream-replay stream)))
+
+(define-math-interactor-command (com-cf :menu t :name "Kettenbruch anzeigen")
+    ()
+  (let ((stream (get-frame-pane *application-frame* 'app)))
+    (stream-add-math-output stream
+                            (math-output (make-instance 'finite-continued-fraction
+                                                        :partial-quotients (list 1 2 3 4 5 6 7))
+                                         stream))
+    (stream-replay stream)))

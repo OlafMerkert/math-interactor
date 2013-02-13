@@ -76,6 +76,7 @@
       (values 0 (/ (- l1 l2) 2))))
 
 (defparameter *math-vertical-spacing* 5)
+(defparameter *math-horizontal-spacing* 5)
 
 (defmethod math-output ((fraction fraction) stream)
   (with-output-to-output-record (stream 'fraction-math-output-record new-record
@@ -109,12 +110,15 @@
     (format stream "~&Hallo~%")))
 
 ;; TODO make this behave more nicely with other output to the stream.
-;; TODO figure out how to make the output appears sequentially
+;; TODO fresh-line does not take into account that math-output might
+;; be higher than text.
 (defun stream-add-math-output (stream math-output &optional (move-cursor t))
   (stream-add-output-record stream math-output)
+  (setf (output-record-position math-output) (stream-cursor-position stream))
   (when move-cursor
-    (setf (stream-cursor-position stream)
-         (output-record-end-cursor-position math-output)))
+    (multiple-value-bind (x y) (stream-cursor-position stream)
+      (setf (stream-cursor-position stream)
+            (values (+ x (rectangle-width math-output) *math-horizontal-spacing*) y))))
   math-output)
 
 

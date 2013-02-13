@@ -78,6 +78,36 @@
 (defparameter *math-vertical-spacing* 5)
 (defparameter *math-horizontal-spacing* 5)
 
+(defun align-output-records (records horizontal-align-fn vertical-align-fn
+                             &optional (x-combinate #'+) (y-combinate x-combinate))
+  (let ((h-pos (funcall horizontal-align-fn (mapcar #'rectangle-width records) :horizontal))
+        (v-pos (funcall vertical-align-fn (mapcar #'rectangle-height records) :vertical)))
+    (mapc (lambda (record h-pos v-pos)
+            (multiple-value-bind (x y) (output-record-position record)
+                (setf (output-record-position record)
+                      (values (funcall x-combinate x h-pos)
+                              (funcall y-combinate y v-pos)))))
+          records h-pos v-pos)
+    ;; TODO return center coordinates??
+    ))
+
+(defun centering-align (lengths direction)
+  (declare (ignore direction))
+  (let ((m (reduce #'max lengths)))
+    (mapcar (lambda (l) (/ (- m l) 2)) lengths)))
+
+(defun stacking-align (lengths direction)
+  (let ((position 0)
+        (offset (case direction
+                  (:vertical *math-vertical-spacing*)
+                  (:horizontal *math-horizontal-spacing*)
+                  (t 0))))
+    (mapcar (lambda (l)
+              (prog1 position
+                (incf position (+ l offset))))
+            lengths)))
+
+
 (defmethod math-output ((fraction fraction) stream)
   (with-output-to-output-record (stream 'fraction-math-output-record new-record
                                         :math-object fraction)
@@ -87,22 +117,16 @@
       (stream-add-output-record stream numerator)
       (stream-add-output-record stream denominator)
       ;; calculate dimensions
-      (let ((n-w (rectangle-width  numerator))
-            (n-h (rectangle-height numerator))
-            (d-w (rectangle-width  denominator))
-            ;;(d-h (rectangle-height denominator))
-            )
-        ;; align n and d horizontally and move d down.
-        (multiple-value-bind (n-x d-x) (calc-offset n-w d-w)
-          (setf (output-record-position numerator)
-                (values n-x 0)
-                (output-record-position denominator)
-                (values d-x (+ *math-vertical-spacing*
-                               n-h))))
-        ;; draw the line
-        (draw-line* stream
-                    0 #1=(+ (floor *math-vertical-spacing* 2) n-h)
-                    (max n-w d-w) #1#)))))
+      (align-output-records (list numerator denominator)
+                            #'centering-align
+                            #'stacking-align)
+      (multiple-value-bind (x y) (output-record-position new-record)
+        (let* ((w (rectangle-width new-record))
+               (h (rectangle-width new-record))
+               (middle (+ y (floor h 2) 1)))
+          (draw-line* stream
+                      x middle (+ x w) middle)))
+)))
 
 (define-math-interactor-command (com-output-test :menu t :name "Ausgabe testen")
     ()

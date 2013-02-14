@@ -14,16 +14,21 @@
       new-operator)))
 
 ;;; macros to take care of the boilerplate for establishing new basic types
-(defmacro define-basic-math-output-class (type slots &key centering primitive)
+(defmacro define-basic-math-output-class (type slots+ &key centering primitive)
   "If CENTERING, "
-  (let ((mo-classname (symb type '-math-output-record)))
+  (let ((mo-classname (symb type '-math-output-record))
+        (slots (args->names slots+)))
     `(progn
        ,@(unless primitive
                  `((defclass ,type ()
                      ,(mapcar #`(,a1 :initarg ,(keyw a1)
                                      :initform nil
                                      :reader ,a1) ; TODO maybe use accessor here
-                              slots))))
+                              slots))
+                   ;; provide a shorthand constructor
+                   (defun ,type ,slots+
+                     (make-instance ',type
+                                    ,@(mapcan #`(,(keyw a1) ,a1) slots)))))
        (defclass ,mo-classname
            (,(if centering
                  'math-output-record/with-center
@@ -46,7 +51,7 @@
      (define-basic-math-output-class ,type ,slots :centering ,centering :primitive ,primitive)
      (define-basic-math-output-method (,type ,(symb type '-math-output-record))
        ,@(if primitive body
-             `((with-slots ,slots new-record ,@body))))))
+             `((with-slots ,(args->names slots) new-record ,@body))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; output of ordinary numbers
@@ -75,7 +80,7 @@
               (values (floor w 2) (- center y))))))
 
 ;;; finite sum expressions
-(define-basic-math-output (finite-sum (summands operators))
+(define-basic-math-output (finite-sum (summands &optional operators))
     (setf summands
           (mapcar (math-output-to-record stream)
                   (summands finite-sum))

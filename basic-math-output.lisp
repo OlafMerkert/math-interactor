@@ -5,7 +5,8 @@
                  princ-to-stream))
 
 (defun math-output-to-record (stream)
-  (lambda (s) (math-output s stream)))
+  (lambda (s) (aprog1 (math-output s stream)
+           (stream-add-output-record stream it))))
 
 (defun princ-to-stream (stream &optional (record-type 'operator-math-output-record))
   (lambda (s)
@@ -41,7 +42,9 @@
 (defmacro define-basic-math-output-method ((type output-record-type) &body body)
   "Anaphoric variables: STREAM, NEW-RECORD."
   `(defmethod math-output ((,type ,type) stream)
-     (with-new-output-record (stream ',output-record-type new-record
+     ;; it's important to use this one, not WITH-NEW-OUTPUT-RECORD,
+     ;; otherwise we get problems with attaching stuff.
+     (with-output-to-output-record (stream ',output-record-type new-record
                                            :math-object ,type)
        ,@body
        new-record)))

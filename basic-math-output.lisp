@@ -50,15 +50,25 @@
 
 ;;; finite sum expressions
 (defclass finite-sum ()
-  ((summands :initarg :summands
-         :initform nil
-         :accessor summands)))
+  ((summands  :initarg :summands
+              :initform nil
+              :accessor summands)
+   (operators :initarg :operators
+              :initform nil
+              :accessor operators)))
 
 (defclass finite-sum-math-output-record (math-output-record
                                          standard-sequence-output-record
                                          finite-sum)
-  ((operators :initarg :operators
-              :initform nil)))
+  ())
+
+(defmethod initialize-instance :after ((sum finite-sum-math-output-record) &key)
+  (with-slots (summands operators) sum
+    (cond ((= (length summands) (+ 1 (length operators))))
+          ((null operators)
+           (setf operators (mapcar (constantly '+) (rest summands))))
+          (t (error "finite-sum: length of summands (~A) and operators (~A) do not match."
+                    (length summands) (length operators))))))
 
 (defmethod math-output ((finite-sum finite-sum) stream)
   (with-output-to-output-record (stream 'finite-sum-math-output-record new-record
@@ -71,9 +81,9 @@
             operators
             (mapcar (ilambda (s)
                       (with-new-output-record (stream 'operator-math-output-record new-operator)
-                        (princ #\+ stream)
+                        (princ s stream)
                         new-operator))
-                    (rest (summands finite-sum))))
+                    (operators finite-sum)))
       (align-output-records (insert-operators summands operators)
                             #'stacking-align
                             #'centering-align))

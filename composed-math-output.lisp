@@ -2,6 +2,7 @@
 
 ;;; output of finite continued fractions
 
+
 (defclass finite-continued-fraction ()
   ((partial-quotients :initarg :partial-quotients
          :initform nil
@@ -15,14 +16,11 @@
   (math-output
    (if (simple-cf-p finite-continued-fraction)
        (first #1=(partial-quotients finite-continued-fraction))
-       (make-instance
-        'finite-sum
-        :summands (list (first #1#)
-                        (make-instance
-                         'fraction
-                         :numerator 1
-                         :denominator
-                         (make-instance
-                          'finite-continued-fraction
-                          :partial-quotients (rest #1#))))))
+       (finite-sum
+        (list (first #1#)
+              (fraction
+               1
+               (make-instance
+                'finite-continued-fraction
+                :partial-quotients (rest #1#))))))
    stream))

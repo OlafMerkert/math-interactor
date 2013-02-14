@@ -21,16 +21,12 @@
 
 
 (define-example "Bruch anzeigen"
-    (make-instance 'fraction
-                   :denominator 12312347
-                   :numerator 123894))
+    (fraction 12312347
+              123894))
 
 (define-example "Summe anzeigen"
-    (make-instance 'finite-sum
-                   :summands (list 1 2 3 4 5 6
-                                   (make-instance 'fraction
-                                                  :numerator 17
-                                                  :denominator 1329846))))
+    (finite-sum (list 1 2 3 4 5 6
+                      (fraction 17 1329846))))
 
 (define-example  "Kettenbruch anzeigen"
     (make-instance 'finite-continued-fraction

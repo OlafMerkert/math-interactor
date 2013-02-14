@@ -1,7 +1,7 @@
 (defpackage :math-interactor
   (:nicknames :mi)
   (:use :clim-lisp :clim :ol :iterate)
-  (:shadow :numerator :denominator)
+  (:shadow :numerator :denominator :princ-to-stream)
   (:export))
 
 (in-package :math-interactor)

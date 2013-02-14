@@ -2,12 +2,6 @@
 
 ;;; the general protocoll for formatted math-output
 
-(defgeneric math-output (math-object stream))
-
-(defmethod math-output :before (math-object stream)
-  (when (typep math-object 'math-output-record)
-    (error "Cannot call math-output on output-records!")))
-
 (defclass math-output-record (output-record)
   ((math-object :initarg :math-object
                 :accessor math-object)))
@@ -15,6 +9,12 @@
 (defclass math-output-record/with-center (math-output-record)
   ((center-x :initform 0)
    (center-y :initform 0)))
+
+(defgeneric math-output (math-object stream))
+
+(defmethod math-output :before (math-object stream)
+  (when (typep math-object 'math-output-record)
+    (error "Cannot call math-output on output-records!")))
 
 (defgeneric center-offset (math-output-record))
 

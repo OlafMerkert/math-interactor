@@ -2,7 +2,17 @@
   (:nicknames :mi)
   (:use :clim-lisp :clim :ol :iterate)
   (:shadow :numerator :denominator :princ-to-stream)
-  (:export))
+  (:export
+   #:finite-sum
+   #:fraction
+   #:finite-continued-fraction
+   #:numerator
+   #:denominator
+   #:summands
+   #:operators
+   #:finite-product
+   #:factors
+   #:partial-quotients))
 
 (in-package :math-interactor)
 

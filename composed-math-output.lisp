@@ -24,3 +24,6 @@
                 'finite-continued-fraction
                 :partial-quotients (rest #1#))))))
    stream))
+
+(defun finite-continued-fraction (partial-quotients)
+  (make-instance 'finite-continued-fraction :partial-quotients partial-quotients))

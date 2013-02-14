@@ -21,14 +21,14 @@
 
 
 (define-example "Bruch anzeigen"
-    (fraction 12312347
-              123894))
+    (fraction 1231
+              987))
 
 (define-example "Summe anzeigen"
     (finite-sum (list 1 2 3 4 5 6
                       (fraction 17 1329846))))
 
 (define-example  "Kettenbruch anzeigen"
-    (make-instance 'finite-continued-fraction
-                   :partial-quotients (list 1 2 3 4 5 6 7)))
+    (finite-continued-fraction
+     (list 1 2 3 4 5 6 7)))
 

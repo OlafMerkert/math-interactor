@@ -108,7 +108,15 @@
 (define-basic-math-output (finite-product (factors))
   (setf factors (mapcar (math-output-to-record stream)
                         (factors finite-product)))
-  (align-output-records factors
-                        #'stacking-align
-                        #'centering-align))
+  ;; stretch spacing a little bit
+  (let ((*math-horizontal-spacing* (ceiling (* 1.5 *math-horizontal-spacing*))))
+    ;; TODO do we want small multiplication dots or x ??
+    (align-output-records factors
+                                #'stacking-align
+                                #'centering-align)))
 
+;;; TODO subscript
+
+;;; TODO superscript
+
+;;; TODO parentheses and grouping

@@ -32,3 +32,5 @@
     (finite-continued-fraction
      (list 1 2 3 4 5 6 7)))
 
+(define-example "Produkt anzeigen"
+    (finite-product (list 78 29 13)))

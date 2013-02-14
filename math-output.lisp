@@ -47,7 +47,7 @@
 ;;; a few helper functions for laying out math objects
 
 (defparameter *math-vertical-spacing* 5)
-(defparameter *math-horizontal-spacing* 5)
+(defparameter *math-horizontal-spacing* 3)
 
 (defun nth-arg (n)
   "Build a function that simply returns it's NTH argument."

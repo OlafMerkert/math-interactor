@@ -55,20 +55,6 @@
 (defmethod print-ellipsis    ((printer mo-printer))
   (push "..." (incoming-stack printer)))
 
-;; TODO move to ol-utils
-(defun popn% (n list)
-  (let* ((prevcdr (nthcdr (- n 1) list))
-         (tail (cdr prevcdr)))
-    (setf (cdr prevcdr) nil)
-    (values list tail)))
-
-(defmacro! popn (n place)
-  `(multiple-value-bind (,g!head ,g!tail)
-       (popn% ,n ,place)
-     (setf ,place ,g!tail)
-     ,g!head))
-
-
 (defun finish-product (printer)
   (unless (eq :product (pop (incoming-mode printer)))
     (error "Illegal call to FINISH-PRODUCT."))

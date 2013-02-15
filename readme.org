@@ -1,0 +1,33 @@
+* The ~math-output~ generic function
+The main goal of this function is the rendering of math datastructures
+from ~math-utils~ with CLIM.
+
+In order to achieve this, we are using a two step process, which
+involves three levels of datastructures.
+
+** data structures from ~math-utils~
+These (more or less) canonically represent the mathematical objects in
+a way that is convenient for implementing the mathematical algorithms.
+They usually strive for uniformity from this viewpoint, for example
+for polynomials we also store 0 coefficients.
+
+~math-output~ will accept these data structures, but essentially it
+will call ~math-output-prepare~ to transform them into the next level
+of datastructures.
+
+** data structures representating the abstract rendering
+These essentially correspond to the concept of what we want to draw,
+for instance a fraction with something on the top and the bottom, or a
+sum of stuff, with some operators in between. They are also intended
+for direct composition, for instance we can compose sums and fractions
+to form continued fractions.
+
+This intermediate level is mainly intended to separate the concerns of
+calculating the (abstract) form of a formula and then the laying out
+of this formula.
+
+** ~output-record~ data structures from/for CLIM
+The layout function ~math-output~ essentially recurses through the
+data structures from the previous level, at each step determining
+dimensions and center points of the parts and then aligning them
+according to the intended form.

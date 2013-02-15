@@ -90,16 +90,17 @@
               (values (floor w 2) (- center y))))))
 
 ;;; finite sum expressions
-(define-basic-math-output (finite-sum (summands &optional operators))
-    (setf summands
-          (mapcar (math-output-to-record stream)
-                  (summands finite-sum))
-          operators
-          (mapcar (princ-to-stream stream 'operator-math-output-record)
-                  (operators finite-sum)))
-    (align-output-records (insert-operators summands operators)
-                          #'stacking-align
-                          #'centering-align))
+(define-basic-math-output (finite-sum (summands &optional operators) :centering t)
+  (setf summands
+        (mapcar (math-output-to-record stream)
+                (summands finite-sum))
+        operators
+        (mapcar (princ-to-stream stream 'operator-math-output-record)
+                (operators finite-sum)))
+  (setf (center-offset new-record)
+        (align-output-records (insert-operators summands operators)
+                              #'stacking-align
+                              #'centering-align)))
 
 (defmethod initialize-instance :after ((sum finite-sum) &key)
   (unless (typep sum 'math-output-record)
@@ -112,15 +113,16 @@
 
 
 ;;; finite product expressions
-(define-basic-math-output (finite-product (factors))
+(define-basic-math-output (finite-product (factors) :centering t)
   (setf factors (mapcar (math-output-to-record stream)
                         (factors finite-product)))
   ;; stretch spacing a little bit
   (let ((*math-horizontal-spacing* (ceiling (* 1.5 *math-horizontal-spacing*))))
     ;; TODO do we want small multiplication dots or x ??
-    (align-output-records factors
+    (setf (center-offset new-record)
+          (align-output-records factors
                                 #'stacking-align
-                                #'centering-align)))
+                                #'centering-align))))
 
 ;;; subscript
 (define-basic-math-output (subscript (base index) :centering t)

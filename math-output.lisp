@@ -56,16 +56,16 @@
 
 (defun align-output-records (records horizontal-align-fn vertical-align-fn
                              &optional (x-combinate (nth-arg 1)) (y-combinate x-combinate))
-  (let ((h-pos (funcall horizontal-align-fn records :horizontal))
-        (v-pos (funcall vertical-align-fn records :vertical)))
-    (mapc (lambda (record h-pos v-pos)
-            (multiple-value-bind (x y) (output-record-position record)
+  (multiple-value-bind (h-pos x-off) (funcall horizontal-align-fn records :horizontal)
+    (multiple-value-bind (v-pos y-off) (funcall vertical-align-fn records :vertical)
+      (mapc (lambda (record h-pos v-pos)
+              (multiple-value-bind (x y) (output-record-position record)
                 (setf (output-record-position record)
                       (values (funcall x-combinate x h-pos)
                               (funcall y-combinate y v-pos)))))
-          records h-pos v-pos)
-    ;; TODO return center coordinates??
-    ))
+            records h-pos v-pos)
+      ;; return center coordinates
+      (values x-off y-off))))
 
 (defun centering-align (records direction)
   (let* ((offsets (mapcar (ecase direction
@@ -74,7 +74,8 @@
                           records))
          ;; find the largest center offset.
          (o (reduce #'max offsets)))
-    (mapcar (lambda (x) (- o x)) offsets)))
+    (values (mapcar (lambda (x) (- o x)) offsets)
+            o)))
 
 (defun stacking-align (records direction)
   (let ((lengths (mapcar (ecase direction
@@ -85,10 +86,12 @@
         (offset (ecase direction
                   (:vertical   *math-vertical-spacing*)
                   (:horizontal *math-horizontal-spacing*))))
-    (mapcar (lambda (l)
-              (prog1 position
-                (incf position (+ l offset))))
-            lengths)))
+    (values (mapcar (lambda (l)
+               (prog1 position
+                 (incf position (+ l offset))))
+                    lengths)
+            ;; calculate the center too
+            (floor (- position offset) 2))))
 
 ;;; helper functions for managing cursor advancement
 (defun stream-add-math-output (stream math-output

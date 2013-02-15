@@ -115,8 +115,50 @@
                                 #'stacking-align
                                 #'centering-align)))
 
-;;; TODO subscript
+;;; subscript
+(define-basic-math-output (subscript (base index) :centering t)
+  ;; TODO what about downscaling the index? is that perhaps straightforward?
+  (setf base (math-output (base subscript) stream)
+        index (math-output (index subscript) stream))
+  (stream-add-output-record stream base)
+  (stream-add-output-record stream index)
+  (let ((b-w (rectangle-width base))
+        (i-w (rectangle-width index))
+        (b-h (rectangle-height base))
+        (b-o (nth-value 1 (center-offset base)))
+        (i-o (nth-value 1 (center-offset index))))
+    (setf (output-record-position base) (values 0 0))
+    ;; move the index right and down, s.t. its left border touches the right
+    ;; border of the base, and it's center is aligned with the bottom
+    ;; of the base.
+    (setf (output-record-position index) (values b-w (- b-h i-o)))
+    ;; the vertical center should be the same as what the base has; the
+    ;; horizontal center is just the usual center.
+    (setf (center-offset new-record) (values (floor (+ b-w i-w) 2)
+                                             b-o))))
+;;; superscript
+(define-basic-math-output (superscript (base exponent) :centering t)
+  ;; TODO what about downscaling the exponent? is that perhaps straightforward?
+  (setf base (math-output (base superscript) stream)
+        exponent (math-output (exponent superscript) stream))
+  (stream-add-output-record stream base)
+  (stream-add-output-record stream exponent)
+  (let ((b-w (rectangle-width base))
+        (e-w (rectangle-width exponent))
+        (b-o (nth-value 1 (center-offset base)))
+        (e-o (nth-value 1 (center-offset exponent))))
+    ;; move base down, s.t. the top is vertically aligned with the
+    ;; center of the exponent.
+    (setf (output-record-position base) (values 0 e-o))
+    ;; move the exponent right, s.t. its left border touches the right
+    ;; border of the base
+    (setf (output-record-position exponent) (values b-w 0))
+    ;; the vertical center should be the same as what the base has; the
+    ;; horizontal center is just the usual center.
+    (setf (center-offset new-record) (values (floor (+ b-w e-w) 2)
+                                             (+ b-o e-o)))))
 
-;;; TODO superscript
+;; TODO superscript and fractions don't work well together at the
+;; moment (ambiguity) 
 
 ;;; TODO parentheses and grouping

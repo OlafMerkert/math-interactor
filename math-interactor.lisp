@@ -12,7 +12,12 @@
    #:operators
    #:finite-product
    #:factors
-   #:partial-quotients))
+   #:partial-quotients
+   #:subscript
+   #:superscript
+   #:base
+   #:index
+   #:exponent))
 
 (in-package :math-interactor)
 

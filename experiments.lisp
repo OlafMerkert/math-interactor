@@ -34,3 +34,11 @@
 
 (define-example "Produkt anzeigen"
     (finite-product (list 78 29 13)))
+
+(define-example "Potenz anzeigen"
+    (finite-sum (list 8 (superscript 99 3)
+                      (fraction 8 10)
+                      (superscript (fraction 7 3) 20))))
+
+(define-example "Index anzeigen"
+    (subscript 99 3))

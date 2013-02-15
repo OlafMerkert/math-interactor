@@ -121,3 +121,11 @@
   ;; todo what about presentations? probably not at this level.
   (math-output (math-output-prepare power-series) stream))
 
+;; also make rational stuff look nicer
+(defmethod math-output-prepare ((integer integer))
+  integer)
+
+(defmethod math-output-prepare ((rational rational))
+  (fraction (cl:numerator rational) (cl:denominator rational)))
+
+;; TODO the minus is a little small atm

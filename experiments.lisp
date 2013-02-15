@@ -47,6 +47,10 @@
     (generic-math-output-implementation:math-output-prepare
      (polynomials:make-polynomial 1 -2 3 -4 5)))
 
+(define-example "Polynom 2 anzeigen"
+    (generic-math-output-implementation:math-output-prepare
+     (polynomials:make-polynomial 1 0 -2 3 0 -4 5)))
+
  (define-example "Potenzreihe (statisch) anzeigen"
     (generic-math-output-implementation:math-output-prepare
      (power-series:make-power-series 12 1 -2 3 -4 5 32 78 0 1 7 3 81 83 1 7 89 8 7 1 7 88 8)))

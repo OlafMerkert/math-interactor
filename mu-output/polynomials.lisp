@@ -110,8 +110,8 @@
     (first (incoming-stack printer))))
 
 ;; also make rational stuff look nicer
-(def-math-output-prepare (integer)
-  integer)
+
+(defmethod math-output-prepare ((integer integer)) integer)
 
 (def-math-output-prepare (rational)
   (fraction (cl:numerator rational) (cl:denominator rational)))

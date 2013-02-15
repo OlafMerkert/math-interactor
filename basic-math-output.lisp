@@ -61,6 +61,9 @@
 (define-basic-math-output (number () :primitive t)
   (princ number stream))
 
+(define-basic-math-output (integer () :primitive t)
+  (princ integer stream))
+
 ;;; output of symbols and string
 (define-basic-math-output (string () :primitive t)
   (princ string stream))

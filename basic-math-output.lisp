@@ -127,11 +127,15 @@
                                 #'stacking-align
                                 #'centering-align))))
 
+(defun math-output/smaller (object stream)
+  (with-text-size (stream :smaller)
+    (math-output object stream)))
+
 ;;; subscript
 (define-basic-math-output (subscript (base index) :centering t)
   ;; TODO what about downscaling the index? is that perhaps straightforward?
   (setf base (math-output (base subscript) stream)
-        index (math-output (index subscript) stream))
+        index (math-output/smaller (index subscript) stream))
   (stream-add-output-record stream base)
   (stream-add-output-record stream index)
   (let ((b-w (rectangle-width base))
@@ -152,7 +156,7 @@
 (define-basic-math-output (superscript (base exponent) :centering t)
   ;; TODO what about downscaling the exponent? is that perhaps straightforward?
   (setf base (math-output (base superscript) stream)
-        exponent (math-output (exponent superscript) stream))
+        exponent (math-output/smaller (exponent superscript) stream))
   (stream-add-output-record stream base)
   (stream-add-output-record stream exponent)
   (let ((b-w (rectangle-width base))

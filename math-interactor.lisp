@@ -1,3 +1,5 @@
+(in-package :cl-user)
+
 (defpackage :math-interactor
   (:nicknames :mi)
   (:use :clim-lisp :clim :ol :iterate)
@@ -18,6 +20,12 @@
    #:base
    #:index
    #:exponent))
+
+(defpackage :generic-math-output-implementation
+  (:nicknames :gmo)
+  (:shadowing-import-from :math-interactor :numerator :denominator)
+  (:use :cl :ol :iterate :math-interactor)
+  (:export))
 
 (in-package :math-interactor)
 

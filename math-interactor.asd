@@ -5,4 +5,7 @@
                (:file "math-output")
                (:file "basic-math-output")
                (:file "composed-math-output")
-               (:file "experiments")))
+               (:file "experiments")
+               (:module "mu-output"
+                        :serial t
+                        :components ((:file "polynomials")))))

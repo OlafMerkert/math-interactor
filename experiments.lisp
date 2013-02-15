@@ -42,3 +42,7 @@
 
 (define-example "Index anzeigen"
     (subscript 99 3))
+
+(define-example "Polynom anzeigen"
+    (generic-math-output-implementation:math-output-prepare
+     (polynomials:make-polynomial 1 -2 3 -4 5)))

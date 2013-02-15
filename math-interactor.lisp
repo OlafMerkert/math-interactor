@@ -19,13 +19,20 @@
    #:superscript
    #:base
    #:index
-   #:exponent))
+   #:exponent
+   #:math-output
+   #:math-output-prepare))
 
 (defpackage :generic-math-output-implementation
   (:nicknames :gmo)
   (:shadowing-import-from :math-interactor :numerator :denominator)
-  (:use :cl :ol :iterate :math-interactor)
-  (:export))
+  (:shadow :finish)
+  (:use :cl :ol :iterate :math-interactor
+        :polynomial-series-printing
+        :polynomials
+        :power-series)
+  (:export
+   #:math-output-prepare))
 
 (in-package :math-interactor)
 

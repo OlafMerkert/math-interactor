@@ -99,33 +99,35 @@
 (defmethod math-output-prepare (object)
   object)
 
-(defmethod math-output-prepare ((polynomial polynomial))
+(defmacro def-math-output-prepare ((type &key (standard-redirection t)) &body body)
+  `(progn
+     (defmethod math-output-prepare ((,type ,type))
+       ,@body)
+     ,@(when standard-redirection
+             `((defmethod math-output ((,type ,type) stream)
+                 (math-output (math-output-prepare ,type) stream))))))
+
+(def-math-output-prepare (polynomial)
   (let ((printer (make-instance 'mo-printer)))
     (print-polynomial printer polynomial)
     (finish printer)
     (assert (length=1 (incoming-stack printer)))
     (first (incoming-stack printer))))
 
-(defmethod math-output ((polynomial polynomial) stream)
-  ;; todo what about presentations?
-  (math-output (math-output-prepare polynomial) stream))
+;; todo what about presentations?
 
-(defmethod math-output-prepare ((power-series power-series))
+(def-math-output-prepare (power-series)
   (let ((printer (make-instance 'mo-printer)))
     (print-power-series printer power-series)
     (finish printer)
     (assert (length=1 (incoming-stack printer)))
     (first (incoming-stack printer))))
 
-(defmethod math-output ((power-series power-series) stream)
-  ;; todo what about presentations? probably not at this level.
-  (math-output (math-output-prepare power-series) stream))
-
 ;; also make rational stuff look nicer
-(defmethod math-output-prepare ((integer integer))
+(def-math-output-prepare (integer)
   integer)
 
-(defmethod math-output-prepare ((rational rational))
+(def-math-output-prepare (rational)
   (fraction (cl:numerator rational) (cl:denominator rational)))
 
 ;; TODO the minus is a little small atm

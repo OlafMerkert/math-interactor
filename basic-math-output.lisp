@@ -58,8 +58,15 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; output of ordinary numbers
-(define-basic-math-output (number nil :primitive t)
+(define-basic-math-output (number () :primitive t)
   (princ number stream))
+
+;;; output of symbols and string
+(define-basic-math-output (string () :primitive t)
+  (princ string stream))
+
+(define-basic-math-output (symbol () :primitive t)
+  (princ symbol stream))
 
 ;;; output of (explicit) fractions
 (define-basic-math-output (fraction (numerator denominator) :centering t)

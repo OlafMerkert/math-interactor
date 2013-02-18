@@ -14,7 +14,8 @@
                 (horizontally ()
                   bin
                   (vertically ()
-                    app int)))))
+                    app
+                    int)))))
 
 (defun math-interactor ()
   (run-frame-top-level (make-instance 'math-interactor)))

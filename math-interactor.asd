@@ -1,5 +1,7 @@
 (defsystem math-interactor
-  :depends-on (ol-utils mcclim iterate)
+  :depends-on (ol-utils mcclim iterate
+                        math-utils
+                        continued-fractions)
   :serial t
   :components ((:file "packages")
                (:file "math-interactor")

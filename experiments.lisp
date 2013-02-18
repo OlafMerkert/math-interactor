@@ -59,3 +59,7 @@
     (generic-math-output-implementation:math-output-prepare
      (gm:sqrt (polynomials:make-polynomial 4 2 1 8 2 ))))
 
+(define-example "Kettenbruch anzeigen"
+    (generic-math-output-implementation:math-output-prepare
+     (make-instance 'cf-ps:continued-fraction :starting (gm:sqrt (polynomials:make-polynomial 1 0 0 1 1)))))
+;; TODO figure out line breaking and horizontal scrolling

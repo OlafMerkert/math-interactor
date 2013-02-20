@@ -21,13 +21,18 @@
    #:index
    #:exponent
    #:math-output
-   #:math-output-prepare))
+   #:math-output-prepare
+   #:def-gm-method
+   #:math-object-presentation
+   #:put-result
+   #:stream-add-math-output))
 
 (defpackage :generic-math-output-implementation
   (:nicknames :gmo)
   (:shadowing-import-from :math-interactor :numerator :denominator)
   (:shadow :finish)
-  (:use :cl :ol :iterate :math-interactor
+  (:use :clim-lisp :clim :ol :iterate
+        :math-interactor
         :polynomial-series-printing
         :polynomials
         :power-series)

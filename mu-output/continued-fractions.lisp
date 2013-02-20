@@ -12,3 +12,7 @@
                           nil))
     "...")))
 
+(def-mo-pres-type cf-ps:continued-fraction)
+
+;; provide error messages if we don't have a suitable gm:xxx method
+;; for the given object

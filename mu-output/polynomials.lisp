@@ -98,3 +98,7 @@
 
 
 ;; TODO the minus is a little small atm
+
+;; presentations
+(def-mo-pres-type polynomial)
+(def-mo-pres-type power-series)

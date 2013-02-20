@@ -13,4 +13,5 @@
                (:module "mu-output"
                         :serial t
                         :components ((:file "simple")
-                                     (:file "polynomials")))))
+                                     (:file "polynomials")
+                                     (:file "continued-fractions")))))

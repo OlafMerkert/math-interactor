@@ -1,6 +1,6 @@
 (in-package :generic-math-output-implementation)
 
-(defparameter *continued-fraction-display-length* 10)
+(defparameter *continued-fraction-display-length* 5)
 
 (def-math-output-prepare (cf-ps:continued-fraction)
   (finite-continued-fraction
@@ -42,8 +42,19 @@
     ((cf 'continued-fraction-presentation) (index 'integer))
   (cf-ps:with-cf2 cf
     (let ((p (lazy-aref cf-ps:pn index))
-          (q (lazy-aref cf-ps:qn index)))
+          (q (lazy-aref cf-ps:qn index))
+          (stream (get-frame-pane *application-frame* 'mi::app)))
+      ;; TODO typeset equation with symbols on the left.
+      (princ "p = " stream)
       (put-result p)
+      (princ "q = " stream)
       (put-result q)
+      (princ "p^2 - D q^2 = " stream)
       (put-result (gm:- (gm:expt p 2) (gm:* cf-ps:d q q))))))
 
+;; TODO partial and complete quotients
+(define-math-interactor-command (com-list-partial-quotients :name "Partial quotients")
+    ((cf 'continued-fraction-presentation) (upto 'integer)))
+
+(define-math-interactor-command (com-list-complete-quotients :name "Complete quotients")
+    ((cf 'continued-fraction-presentation) (upto 'integer)))

@@ -25,7 +25,8 @@
    #:def-gm-method
    #:math-object-presentation
    #:put-result
-   #:stream-add-math-output))
+   #:stream-add-math-output
+   #:define-math-interactor-command))
 
 (defpackage :generic-math-output-implementation
   (:nicknames :gmo)

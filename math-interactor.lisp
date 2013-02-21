@@ -70,9 +70,8 @@
 
 ;; allow on the fly input of new stuff
 (define-math-interactor-command (com-enter-polynomial :name t :menu t)
-    ()
-  (let* ((coeff-string (accept 'string))
-         (coeffs (read-from-string (concatenate 'string "(" coeff-string ")"))))
+    ((coeff-string 'string))
+  (let ((coeffs (read-from-string (concatenate 'string "(" coeff-string ")"))))
     (if (length=1 coeffs)
         (put-result (first coeffs))
         (put-result (apply #'polynomials:make-polynomial coeffs)))))

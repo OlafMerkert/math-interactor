@@ -37,3 +37,13 @@
            (t
             (format stream "~&Quasi-period length: ~A   Period length: ~A~%"
                     period-length (* 2 period-length)))))))
+
+(define-math-interactor-command (com-continuants :name "Show continuants" :menu t)
+    ((cf 'continued-fraction-presentation) (index 'integer))
+  (cf-ps:with-cf2 cf
+    (let ((p (lazy-aref cf-ps:pn index))
+          (q (lazy-aref cf-ps:qn index)))
+      (put-result p)
+      (put-result q)
+      (put-result (gm:- (gm:expt p 2) (gm:* cf-ps:d q q))))))
+

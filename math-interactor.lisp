@@ -21,17 +21,20 @@
   (run-frame-top-level (make-instance 'math-interactor)))
 
 ;; define a command to exit
-(define-math-interactor-command (com-quit :menu t :name "Beenden") ()
+(define-math-interactor-command (com-quit :menu t :name "Quit") ()
   (frame-exit *application-frame*))
 
 ;;; define commands for math-utils operations
-(defun put-result (math-object)
+(defun put-result (math-object &optional to-bin)
   ;; for now, just dump stuff to app output
-  (let ((stream (get-frame-pane *application-frame* 'app)))
+  (let ((stream (get-frame-pane *application-frame* (if to-bin 'bin 'app))))
     (present math-object (math-object-presentation math-object)
              :stream stream)
     (stream-replay stream)))
 
+(define-math-interactor-command (com-put-to-bin :menu t :name "Save object to bin")
+    ((object 'math-object-presentation))
+  (put-result object t))
 
 ;; start off with the generic stuff.
 (define-presentation-type math-object-presentation ())
@@ -56,3 +59,16 @@
 (def-gm-method sqrt gm:sqrt 1)
 
 (def-gm-method minus gm:- 1)
+
+;; allow on the fly input of new stuff
+(define-math-interactor-command (com-enter-polynomial :name t :menu t)
+    ()
+  (let* ((coeff-string (accept 'string))
+         (coeffs (read-from-string (concatenate 'string "(" coeff-string ")"))))
+    (if (length=1 coeffs)
+        (put-result (first coeffs))
+        (put-result (apply #'polynomials:make-polynomial coeffs)))))
+
+(define-math-interactor-command (com-clear-app :name "Clear" :menu t)
+    ()
+  (window-clear (get-frame-pane *application-frame* 'app)))

@@ -33,6 +33,7 @@
 ;; a small hack to get math-objects into input fields for commmands
 (defvar math-object-store (make-hash-table :test 'equal))
 
+;; perhaps make this look nicer.
 (defun get-string-representation (math-object)
   (subseq
    (with-output-to-string (stream)

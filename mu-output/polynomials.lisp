@@ -84,6 +84,7 @@
   (let ((printer (make-instance 'mo-printer)))
     (print-polynomial printer polynomial)
     (finish printer)
+    ;; FIXME problem with zero polynomial
     (assert (length=1 (incoming-stack printer)))
     (first (incoming-stack printer))))
 
@@ -96,9 +97,20 @@
     (assert (length=1 (incoming-stack printer)))
     (first (incoming-stack printer))))
 
-
+;; TODO command history is not working properly
 ;; TODO the minus is a little small atm
 
 ;; presentations
 (def-mo-pres-type polynomial)
 (def-mo-pres-type power-series)
+
+;; custom commands for polys and power series
+(def-gm-method degree polynomials:degree
+  1 (or polynomial-presentation power-series-presentation))
+
+(def-gm-method leading-coefficient polynomials:leading-coefficient
+  1  (or polynomial-presentation power-series-presentation))
+
+(def-gm-method truncate power-series:series-truncate 1 power-series-presentation)
+(def-gm-method remainder power-series:series-remainder 1 power-series-presentation)
+

@@ -50,11 +50,19 @@
          ,(mapcar #`(,a1 ',presentation-type) arguments)
        (put-result (,op-name ,@arguments)))))
 
-(def-gm-method add gm:+ 2)
+(def-gm-method plus gm:+ 2)
 
 (def-gm-method times gm:* 2)
 
 (def-gm-method divide gm:/ 2)
+
+;; for polynomials, first convert to a power series
+(defun special-invert (object)
+  (gm:/ (if (typep object 'polynomials:polynomial)
+            (gm:-> 'power-series:power-series object)
+            object)))
+
+(def-gm-method invert special-invert 1)
 
 (def-gm-method sqrt gm:sqrt 1)
 

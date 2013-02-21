@@ -10,9 +10,9 @@
   (fraction (cl:numerator rational) (cl:denominator rational)))
 
 (def-math-output-prepare (finite-fields:integer-mod)
-  (superscript (finite-fields:remainder)
+  (superscript (finite-fields:remainder finite-fields:integer-mod)
                ;; TODO add some brackets
-               (finite-fields:modulus)))
+               (finite-fields:modulus finite-fields:integer-mod)))
 
 ;; now pack everything up in presentations.
 

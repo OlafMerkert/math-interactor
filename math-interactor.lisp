@@ -55,4 +55,4 @@
 
 (def-gm-method sqrt gm:sqrt 1)
 
-(def-gm-method minus gm:= 1)
+(def-gm-method minus gm:- 1)

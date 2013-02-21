@@ -29,3 +29,28 @@
 (define-presentation-method present (object (type math-object-presentation) stream view &key)
   (stream-add-math-output stream (math-output object stream)
                           :line-break t))
+
+;; a small hack to get math-objects into input fields for commmands
+(defvar math-object-store (make-hash-table :test 'equal))
+
+(defun get-string-representation (math-object)
+  (subseq
+   (with-output-to-string (stream)
+     (print-unreadable-object (math-object stream :type t :identity t)))
+   1)) ; discard the #
+
+(defun from-store (string-repr)
+  (gethash string-repr math-object-store))
+
+(defun to-store (math-object)
+  (let ((repr (get-string-representation math-object)))
+    (gethash/c repr math-object-store math-object)
+    repr))
+
+(define-presentation-method present (object (type math-object-presentation) stream (view textual-dialog-view) &key)
+  (princ (to-store object) stream))
+
+(define-presentation-method accept ((type math-object-presentation) stream (view textual-dialog-view) &key)
+  (from-store (read-line stream)))
+
+

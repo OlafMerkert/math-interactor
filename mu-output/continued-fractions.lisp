@@ -21,7 +21,11 @@
     ((poly 'polynomial-presentation))
   (let ((cf (make-instance 'cf-ps:sqrt-continued-fraction
                            :radicand poly)))
+    (princ "D = ")
+    (put-result poly)
+    (princ "(sqrt D) = ")
     (put-result (cf-ps:starting cf))
+    (princ "(cf D) = ")
     (put-result cf)))
 
 (define-math-interactor-command (com-check-quasi-period :name "Find (quasi)period" :menu t)
@@ -52,9 +56,19 @@
       (princ "p^2 - D q^2 = " stream)
       (put-result (gm:- (gm:expt p 2) (gm:* cf-ps:d q q))))))
 
-;; TODO partial and complete quotients
+;; partial and complete quotients
 (define-math-interactor-command (com-list-partial-quotients :name "Partial quotients")
-    ((cf 'continued-fraction-presentation) (upto 'integer)))
+    ((cf 'continued-fraction-presentation) (index 'integer))
+  (cf-ps:with-cf2 cf
+    (let ((stream (get-frame-pane *application-frame* 'mi::app)))
+      (format stream "a_~A = " index)
+      (put-result (lazy-aref cf-ps:an index)))))
 
 (define-math-interactor-command (com-list-complete-quotients :name "Complete quotients")
-    ((cf 'continued-fraction-presentation) (upto 'integer)))
+    ((cf 'continued-fraction-presentation) (index 'integer))
+  (cf-ps:with-cf2 cf
+    (let ((stream (get-frame-pane *application-frame* 'mi::app)))
+      (format stream "r_~A = " index)
+      (put-result (lazy-aref cf-ps:rn index))
+      (format stream "s_~A = " index)
+      (put-result (lazy-aref cf-ps:sn index)))))

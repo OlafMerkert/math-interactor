@@ -10,7 +10,7 @@
   (fraction (cl:numerator rational) (cl:denominator rational)))
 
 (def-math-output-prepare (finite-fields:integer-mod)
-  (superscript (finite-fields:remainder finite-fields:integer-mod)
+  (subscript (finite-fields:remainder finite-fields:integer-mod)
                ;; TODO add some brackets
                (finite-fields:modulus finite-fields:integer-mod)))
 

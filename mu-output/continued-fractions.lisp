@@ -58,20 +58,22 @@
 
 ;; partial and complete quotients
 (define-math-interactor-command (com-list-partial-quotients :name "Partial quotients")
-    ((cf 'continued-fraction-presentation) (index 'integer))
+    ((cf 'continued-fraction-presentation) (start 'integer :default 0) (end 'integer))
   (cf-ps:with-cf2 cf
     (let ((stream (get-frame-pane *application-frame* 'mi::app)))
-      (format stream "a_~A = " index)
-      (put-result (lazy-aref cf-ps:an index)))))
+      (iter (for index from start to end)
+            (format stream "a_~A = " index)
+            (put-result (lazy-aref cf-ps:an index))))))
 
 (define-math-interactor-command (com-list-complete-quotients :name "Complete quotients")
-    ((cf 'continued-fraction-presentation) (index 'integer))
+    ((cf 'continued-fraction-presentation) (start 'integer :default 0) (end 'integer))
   (cf-ps:with-cf2 cf
     (let ((stream (get-frame-pane *application-frame* 'mi::app)))
-      (format stream "r_~A = " index)
-      (put-result (lazy-aref cf-ps:rn index))
-      (format stream "s_~A = " index)
-      (put-result (lazy-aref cf-ps:sn index)))))
+      (iter (for index from start to end)
+            (format stream "r_~A = " index)
+            (put-result (lazy-aref cf-ps:rn index))
+            (format stream "s_~A = " index)
+            (put-result (lazy-aref cf-ps:sn index))))))
 
 ;; integration formula
 (define-math-interactor-command (com-integration-formula :name "Integration formula")

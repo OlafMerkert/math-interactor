@@ -9,9 +9,10 @@
                (:file "basic-math-output")
                (:file "composed-math-output")
                (:file "math-output-prepare")
-               (:file "experiments")
                (:module "mu-output"
                         :serial t
                         :components ((:file "simple")
                                      (:file "polynomials")
-                                     (:file "continued-fractions")))))
+                                     (:file "continued-fractions")))
+               (:file "experiments")
+               (:file "pell-examples")))

@@ -17,6 +17,12 @@
                     app
                     int)))))
 
+(defparameter *math-interactor-load-data-hooks* nil)
+
+(defun add-mi-hook (fn)
+  (pushnew fn *math-interactor-load-data-hooks*))
+
+
 (defun math-interactor ()
   (run-frame-top-level (make-instance 'math-interactor)))
 
@@ -24,17 +30,43 @@
 (define-math-interactor-command (com-quit :menu t :name "Quit") ()
   (frame-exit *application-frame*))
 
+(define-math-interactor-command (com-run-hooks :menu t :name "Load data")
+    ()
+  (mapc #'funcall (reverse *math-interactor-load-data-hooks*)))
+
+;; make the bin persistent
+(defvar *bin* nil)
+
 ;;; define commands for math-utils operations
-(defun put-result (math-object &optional to-bin)
+(defun put-result% (math-object pane-id)
   ;; for now, just dump stuff to app output
-  (let ((stream (get-frame-pane *application-frame* (if to-bin 'bin 'app))))
+  (let ((stream (get-frame-pane *application-frame* pane-id)))
     (present math-object (math-object-presentation math-object)
              :stream stream)
     (stream-replay stream)))
 
+(defun put-result (math-object &optional to-bin)
+  (if (not to-bin)
+      (put-result% math-object 'app)
+      (unless (member math-object *bin* :test #'gm:=)
+        (push math-object *bin*)
+        (put-result% math-object 'bin))))
+
+;; load stuff from bin on making new window
+(defun populate-from-bin ()
+  (dolist (mo (reverse *bin*))
+    (put-result% mo 'bin)))
+
+(add-mi-hook 'populate-from-bin)
+
 (define-math-interactor-command (com-put-to-bin :menu t :name "Save object to bin")
     ((object 'math-object-presentation))
   (put-result object t))
+
+(define-math-interactor-command (com-clear-bin :name "Clear bin")
+    ()
+  (setf *bin* nil)
+  (window-clear (get-frame-pane *application-frame* 'bin)))
 
 ;; start off with the generic stuff.
 (define-presentation-type math-object-presentation ())

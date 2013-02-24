@@ -100,6 +100,11 @@
 
 (def-gm-method minus gm:- 1)
 
+(define-math-interactor-command (com-reduce-modp :name "reduce mod p")
+    ((math-object 'math-object-presentation) (p 'integer :default 3))
+  ;; TODO check that p is prime
+  (put-result (gm:-> 'finite-fields:integer-mod math-object :mod p)))
+
 ;; allow on the fly input of new stuff
 (define-math-interactor-command (com-enter-polynomial :name t :menu t)
     ((coeff-string 'string))

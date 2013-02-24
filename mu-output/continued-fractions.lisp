@@ -72,3 +72,16 @@
       (put-result (lazy-aref cf-ps:rn index))
       (format stream "s_~A = " index)
       (put-result (lazy-aref cf-ps:sn index)))))
+
+;; integration formula
+(define-math-interactor-command (com-integration-formula :name "Integration formula")
+    ((cf 'continued-fraction-presentation) (index 'integer))
+  (cf-ps:with-cf2 cf
+    (let ((p (lazy-aref cf-ps:pn index))
+          (q (lazy-aref cf-ps:qn index))
+          (stream (get-frame-pane *application-frame* 'mi::app)))
+      ;; TODO typeset equation with symbols on the left.
+      (princ "f = " stream)
+      (if (gm:zero-p q)
+          (put-result 0)
+          (put-result (gm:/ (derivative p) q))))))

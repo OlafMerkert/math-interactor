@@ -3,19 +3,19 @@
 (define-application-frame math-interactor ()
   ()
   (:panes (app :application
-               :width 700 :height 600
+               :width 800 :height 600
                :incremental-redisplay t)
           (int :interactor
-               :width 500 :height 200)
+               :width 800 :height 200)
           (bin :application
-               :width 300 :height 500
+               :width 200 :height 500
                :incremental-redisplay t))
   (:layouts (default
-                (horizontally ()
-                  bin
-                  (vertically ()
-                    app
-                    int)))))
+                (vertically ()
+                  (horizontally ()
+                    bin
+                    app)
+                  int))))
 
 (defparameter *math-interactor-load-data-hooks* nil)
 
@@ -27,7 +27,7 @@
   (run-frame-top-level (make-instance 'math-interactor)))
 
 ;; define a command to exit
-(define-math-interactor-command (com-quit :menu t :name "Quit") ()
+(define-math-interactor-command (com-quit :menu nil :name "Quit") ()
   (frame-exit *application-frame*))
 
 (define-math-interactor-command (com-run-hooks :menu t :name "Load data")
@@ -62,6 +62,10 @@
 (define-math-interactor-command (com-put-to-bin :menu t :name "Save object to bin")
     ((object 'math-object-presentation))
   (put-result object t))
+
+(define-math-interactor-command (com-put-app :menu t :name "Copy")
+    ((object 'math-object-presentation))
+  (put-result object))
 
 (define-math-interactor-command (com-clear-bin :name "Clear bin")
     ()
@@ -116,3 +120,8 @@
 (define-math-interactor-command (com-clear-app :name "Clear" :menu t)
     ()
   (window-clear (get-frame-pane *application-frame* 'app)))
+
+(define-math-interactor-command (com-series-term :name "Set series output precision")
+    ((additional-terms 'integer :default 5))
+  (setf polynomial-series-printing:print-additional-terms
+        additional-terms))

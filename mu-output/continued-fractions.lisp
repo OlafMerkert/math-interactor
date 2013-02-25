@@ -92,4 +92,12 @@
 (define-math-interactor-command (com-check-torsion :name "Check torsion")
     ((object '(or continued-fraction-presentation
                polynomial-presentation)))
-  (cf-ps:check-torsion-divisor object))
+  (let ((stream (get-frame-pane *application-frame* 'mi::app)))
+    (multiple-value-bind (order point curve) (cf-ps:check-torsion-divisor object)
+      ;; this stuff might be interesting to some people
+      (format stream "~&Point (~A, ~A) on Y^2 = X^3 + ~A X + ~A~%"
+              (ec-ws:x point) (ec-ws:y point)
+              (ec-ws:ws-a curve) (ec-ws:ws-b curve))
+      (if order
+          (format stream "~&[O_1] - [O_2] has finite order ~A.~%" order)
+          (format stream "~&[O_1] - [O_2] is not torsion.~%")))))

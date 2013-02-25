@@ -19,7 +19,7 @@
      ;; degree 4
      ( 1 0 0 1 1)
      (1 -8 -42 424 -119)             ; self computed, with order 9
-     (1 14 393 -184 1072)            ; self computed, with order 12
+     (1 14 393 -184 1072)            ; self computed, with order 10
      ;; degree 6
      (1 0 0 0 0 1 1) 
      (1 94 10113 8608 14464)          ; self computed times

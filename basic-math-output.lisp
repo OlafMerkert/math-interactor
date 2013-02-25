@@ -133,8 +133,8 @@
 
 ;;; subscript
 (define-basic-math-output (subscript (base index) :centering t)
-  ;; TODO what about downscaling the index? is that perhaps straightforward?
   (setf base (math-output (base subscript) stream)
+        ;; downscaling the index
         index (math-output/smaller (index subscript) stream))
   (stream-add-output-record stream base)
   (stream-add-output-record stream index)
@@ -154,8 +154,8 @@
                                              b-o))))
 ;;; superscript
 (define-basic-math-output (superscript (base exponent) :centering t)
-  ;; TODO what about downscaling the exponent? is that perhaps straightforward?
   (setf base (math-output (base superscript) stream)
+        ;; downscaling the exponent
         exponent (math-output/smaller (exponent superscript) stream))
   (stream-add-output-record stream base)
   (stream-add-output-record stream exponent)

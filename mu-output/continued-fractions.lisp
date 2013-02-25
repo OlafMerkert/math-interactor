@@ -30,7 +30,7 @@
 
 (define-math-interactor-command (com-check-quasi-period :name "Find (quasi)period" :menu t)
     ((cf 'continued-fraction-presentation)
-     (bound 'integer :default 40))
+     (bound 'integer :default 40 :prompt "bound"))
   (let ((stream (get-frame-pane *application-frame* 'mi::app)))
    (multiple-value-bind (period-length sn)
        (cf-ps:find-pure-quasiperiod-length cf :length-bound bound)
@@ -43,7 +43,7 @@
                     period-length (* 2 period-length)))))))
 
 (define-math-interactor-command (com-continuants :name "Show continuants" :menu t)
-    ((cf 'continued-fraction-presentation) (index 'integer))
+    ((cf 'continued-fraction-presentation) (index 'integer :prompt "n"))
   (cf-ps:with-cf2 cf
     (let ((p (lazy-aref cf-ps:pn index))
           (q (lazy-aref cf-ps:qn index))
@@ -58,7 +58,7 @@
 
 ;; partial and complete quotients
 (define-math-interactor-command (com-list-partial-quotients :name "Partial quotients")
-    ((cf 'continued-fraction-presentation) (start 'integer :default 0) (end 'integer))
+    ((cf 'continued-fraction-presentation) (start 'integer :default 0 :prompt "start") (end 'integer :prompt "end"))
   (cf-ps:with-cf2 cf
     (let ((stream (get-frame-pane *application-frame* 'mi::app)))
       (iter (for index from start to end)
@@ -66,7 +66,7 @@
             (put-result (lazy-aref cf-ps:an index))))))
 
 (define-math-interactor-command (com-list-complete-quotients :name "Complete quotients")
-    ((cf 'continued-fraction-presentation) (start 'integer :default 0) (end 'integer))
+    ((cf 'continued-fraction-presentation) (start 'integer :default 0 :prompt "start") (end 'integer :prompt "end"))
   (cf-ps:with-cf2 cf
     (let ((stream (get-frame-pane *application-frame* 'mi::app)))
       (iter (for index from start to end)
@@ -77,7 +77,7 @@
 
 ;; integration formula
 (define-math-interactor-command (com-integration-formula :name "Integration formula")
-    ((cf 'continued-fraction-presentation) (index 'integer))
+    ((cf 'continued-fraction-presentation) (index 'integer :prompt "n"))
   (cf-ps:with-cf2 cf
     (let ((p (lazy-aref cf-ps:pn index))
           (q (lazy-aref cf-ps:qn index))
@@ -91,7 +91,8 @@
 ;; check for torsion point
 (define-math-interactor-command (com-check-torsion :name "Check torsion")
     ((object '(or continued-fraction-presentation
-               polynomial-presentation)))
+               polynomial-presentation)
+             :prompt "polynomial or continued fraction"))
   (let ((stream (get-frame-pane *application-frame* 'mi::app)))
     (multiple-value-bind (order point curve) (cf-ps:check-torsion-divisor object)
       ;; this stuff might be interesting to some people

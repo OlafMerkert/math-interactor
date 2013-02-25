@@ -79,7 +79,8 @@
   (window-clear (get-frame-pane *application-frame* 'app)))
 
 ;; start off with the generic stuff.
-(define-presentation-type math-object-presentation ())
+(define-presentation-type math-object-presentation ()
+  :description "math object")
 
 (defgeneric math-object-presentation (object))
 
@@ -111,21 +112,21 @@
 (def-gm-method minus gm:- 1)
 
 (define-math-interactor-command (com-reduce-modp :name "reduce mod p")
-    ((math-object 'math-object-presentation) (p 'integer :default 3))
-  ;; TODO check that p is prime
+    ((math-object 'math-object-presentation) (p 'integer :default 3 :prompt "prime"))
+  ;; check that p is prime
+  (assert (nt:prime-p p))
   (put-result (gm:-> 'finite-fields:integer-mod math-object :mod p)))
 
 ;; allow on the fly input of new stuff
 (define-math-interactor-command (com-enter-polynomial :name t :menu t)
-    ((coeff-string 'string))
+    ((coeff-string 'string :prompt "coefficients"))
+  ;; TODO make polynomial input less hackish
   (let ((coeffs (read-from-string (concatenate 'string "(" coeff-string ")"))))
     (if (length=1 coeffs)
         (put-result (first coeffs))
         (put-result (apply #'polynomials:make-polynomial coeffs)))))
 
-
-
 (define-math-interactor-command (com-series-term :name "Set series output precision")
-    ((additional-terms 'integer :default 5))
+    ((additional-terms 'integer :default 5 :prompt "nr of additional terms"))
   (setf polynomial-series-printing:print-additional-terms
         additional-terms))

@@ -1,11 +1,11 @@
 (in-package :generic-math-output-implementation)
 
-;; TODO create a nice output for polynomials (and series at the same
+;; create a nice output for polynomials (and series at the same
 ;; time)
 
-;; essentially, we just need to implement stuff from
-;; polynomial-series-printing, here we are of course leaking
-;; abstractions badly
+;; essentially, we just need to implement the interface from
+;; polynomial-series-printing, we are of course leaking abstractions
+;; badly
 
 (defclass mo-printer ()
   ((incoming-stack :initarg :incoming-stack
@@ -16,8 +16,7 @@
          :accessor incoming-mode)
    (incoming-count :initarg :incoming-count
          :initform nil
-         :accessor incoming-count))
-  (:documentation "TODO"))
+         :accessor incoming-count)))
 
 (defmethod print-number      ((printer mo-printer) number)
   (push (math-output-prepare number)

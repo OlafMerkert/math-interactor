@@ -111,5 +111,3 @@
 
 ;; TODO figure out a proper line-breaking protocol
 ;; TODO make this behave more nicely with other output to the stream.
-;; TODO fresh-line does not take into account that math-output might
-;; be higher than text.

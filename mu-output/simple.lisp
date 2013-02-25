@@ -16,10 +16,16 @@
 
 ;; now pack everything up in presentations.
 
-(defmacro def-mo-pres-type (mo-type)
+(defmacro def-mo-pres-type (mo-type &optional description)
+  (unless description
+    (setf description
+          (string-downcase
+           (substitute #\space #\-
+                       (symbol-name mo-type)))))
   `(progn
      (define-presentation-type ,(symb mo-type '-presentation) ()
-       :inherit-from '(and math-object-presentation ,mo-type))
+       :inherit-from '(and math-object-presentation ,mo-type)
+       :description ,description)
      (defmethod math-object-presentation ((,mo-type ,mo-type))
        ',(symb mo-type '-presentation))))
 

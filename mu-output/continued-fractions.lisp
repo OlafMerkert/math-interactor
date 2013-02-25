@@ -87,3 +87,9 @@
       (if (gm:zero-p q)
           (put-result 0)
           (put-result (gm:/ (derivative p) q))))))
+
+;; check for torsion point
+(define-math-interactor-command (com-check-torsion :name "Check torsion")
+    ((object '(or continued-fraction-presentation
+               polynomial-presentation)))
+  (cf-ps:check-torsion-divisor object))

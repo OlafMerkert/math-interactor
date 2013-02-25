@@ -4,12 +4,14 @@
   ()
   (:panes (app :application
                :width 800 :height 600
-               :incremental-redisplay t)
+               :incremental-redisplay t
+               :scroll-bars t)
           (int :interactor
                :width 800 :height 200)
           (bin :application
                :width 200 :height 500
-               :incremental-redisplay t))
+               :incremental-redisplay t
+               :scroll-bars t))
   (:layouts (default
                 (vertically ()
                   (horizontally ()

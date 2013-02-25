@@ -14,5 +14,5 @@
                         :components ((:file "simple")
                                      (:file "polynomials")
                                      (:file "continued-fractions")))
-               (:file "experiments")
+               ;; (:file "experiments")
                (:file "pell-examples")))

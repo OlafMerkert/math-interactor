@@ -59,11 +59,11 @@
 
 (add-mi-hook 'populate-from-bin)
 
-(define-math-interactor-command (com-put-to-bin :menu t :name "Save object to bin")
+(define-math-interactor-command (com-put-to-bin :menu t :name "Copy/bin")
     ((object 'math-object-presentation))
   (put-result object t))
 
-(define-math-interactor-command (com-put-app :menu t :name "Copy")
+(define-math-interactor-command (com-put-to-app :menu t :name "Copy/app")
     ((object 'math-object-presentation))
   (put-result object))
 
@@ -71,6 +71,10 @@
     ()
   (setf *bin* nil)
   (window-clear (get-frame-pane *application-frame* 'bin)))
+
+(define-math-interactor-command (com-clear-app :name "Clear" :menu t)
+    ()
+  (window-clear (get-frame-pane *application-frame* 'app)))
 
 ;; start off with the generic stuff.
 (define-presentation-type math-object-presentation ())
@@ -117,9 +121,7 @@
         (put-result (first coeffs))
         (put-result (apply #'polynomials:make-polynomial coeffs)))))
 
-(define-math-interactor-command (com-clear-app :name "Clear" :menu t)
-    ()
-  (window-clear (get-frame-pane *application-frame* 'app)))
+
 
 (define-math-interactor-command (com-series-term :name "Set series output precision")
     ((additional-terms 'integer :default 5))

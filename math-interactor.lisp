@@ -117,6 +117,16 @@
   (assert (nt:prime-p p))
   (put-result (gm:-> 'finite-fields:integer-mod math-object :mod p)))
 
+(define-math-interactor-command (com-order-p :name "order of p")
+    ((math-object 'math-object-presentation) (p 'integer :default 3 :prompt "prime"))
+  (assert (nt:prime-p p))
+  (format #1=(get-frame-pane *application-frame* 'app) "ord_~A = " p)
+  (multiple-value-bind (bound comment)
+      (vv:valuate-exp p math-object)
+    (put-result bound)
+    (when (eq comment :unbounded)
+      (format #1# " unbounded~%"))))
+
 ;; allow on the fly input of new stuff
 (define-math-interactor-command (com-enter-polynomial :name t :menu t)
     ((coeff-string 'string :prompt "coefficients"))
@@ -130,3 +140,5 @@
     ((additional-terms 'integer :default 5 :prompt "nr of additional terms"))
   (setf polynomial-series-printing:print-additional-terms
         additional-terms))
+
+;;; todo show fractions factorised

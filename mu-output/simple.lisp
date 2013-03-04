@@ -93,17 +93,19 @@
 (define-presentation-method accept ((type math-object-presentation) stream (view textual-dialog-view) &key)
   (from-store (read-line stream)))
 
-;;; output of symbols for infinity
+;;; TODO output of symbols for infinity
 
 (defmethod math-output-prepare ((infinity (eql infinity+)))
-  "∞")
+  "inf")
 
-(defmethod math-output ((infinity infinity+) stream)
-  (math-output "∞" stream))
+(defmethod math-output ((infinity (eql infinity+)) stream)
+  (math-output "inf" stream))
 
 (defmethod math-output-prepare ((infinity (eql infinity-)))
-  "-∞")
+  "-inf")
 
-(defmethod math-output ((infinity infinity-) stream)
-  (math-output "-∞" stream))
+(defmethod math-output ((infinity (eql infinity-)) stream)
+  (math-output "-inf" stream))
 
+;; TODO "leading coefficent" not displayed?
+;; FIX some bugs with poly display (perhaps related to poly printer) 

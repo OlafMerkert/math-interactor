@@ -142,3 +142,17 @@
         additional-terms))
 
 ;;; todo show fractions factorised
+(define-math-interactor-command (com-toggle-integer-display :name "Select integer display.")
+    ((integer 'integer :default 0 :prompt "0 for no factorisation, -1 for complete factorisation or any single factor."))
+  (format (get-frame-pane *application-frame* 'app)
+          (cond ((zerop integer)
+                 (setf gmo:*integer-output-mode* nil)
+                 "~&No factorisation.~%")
+                ((minusp integer)
+                 (setf gmo:*integer-output-mode* t)
+                 "~&Complete factorisation.~%")
+                (t
+                 (setf gmo:*integer-output-mode* integer)
+                 (mkstr "~&Factor out just "
+                        integer
+                        ".~%")))))

@@ -39,4 +39,5 @@
         :polynomials
         :power-series)
   (:export
-   #:math-output-prepare))
+   #:math-output-prepare
+   #:*integer-output-mode*))

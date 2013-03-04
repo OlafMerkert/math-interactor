@@ -4,10 +4,43 @@
 
 ;; also make rational stuff look nicer
 
-(defmethod math-output-prepare ((integer integer)) integer)
+(defparameter *integer-output-mode* nil
+  "possible values are NIL for default output, T for factorised
+  output, or a prime integer P for splitting off it's powers.")
+
+(defmethod math-output-prepare ((integer integer))
+  (cond ((or (zerop integer)
+             (not *integer-output-mode*)) integer)
+        ((integerp *integer-output-mode*)
+         (prepare-extract-p integer *integer-output-mode*))
+        (t (prepare-factorised integer))))
+
+(defun prepare-extract-p (rational p)
+  (multiple-value-bind (order remfactors) (nt:ord-p p rational)
+    (let ((*integer-output-mode* nil))
+     (if (zerop order)
+         (math-output-prepare remfactors)
+         (finite-product (list (superscript p order)
+                               (math-output-prepare remfactors)))))))
+
+(defun prepare-factorised (integer)
+  (if (= 1 integer)
+      integer
+      (finite-product
+       (mapcar (lambda (x)
+                 (if (consp x)
+                     (superscript (car x) (cdr x))
+                     x))
+               (nt:factorise integer)))))
 
 (def-math-output-prepare (rational)
-  (fraction (cl:numerator rational) (cl:denominator rational)))
+  (cond ((not *integer-output-mode*)
+         (fraction (cl:numerator rational) (cl:denominator rational)))
+        ((integerp *integer-output-mode*)
+         (prepare-extract-p rational *integer-output-mode*))
+        (t
+         (fraction (prepare-factorised (cl:numerator rational))
+                   (prepare-factorised (cl:denominator rational))))))
 
 (def-math-output-prepare (finite-fields:integer-mod)
   (subscript (finite-fields:remainder finite-fields:integer-mod)
@@ -59,5 +92,6 @@
 
 (define-presentation-method accept ((type math-object-presentation) stream (view textual-dialog-view) &key)
   (from-store (read-line stream)))
+
 
 

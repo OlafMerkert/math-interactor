@@ -157,7 +157,7 @@
                         integer
                         ".~%")))))
 
-(define-math-interactor-command (com-valuate-coeff :name "Valuate coefficientwise")
+(define-math-interactor-command (com-valuate-coeff :name "Valuate coefficientwise" :menu t)
     ((math-object 'math-object-presentation)
      (valuation 'integer :prompt "valuation (prime number)"))
   (put-result (vc:valuate-exp valuation math-object)))

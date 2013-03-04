@@ -87,8 +87,6 @@
     (assert (length=1 (incoming-stack printer)))
     (first (incoming-stack printer))))
 
-;; todo what about presentations?
-
 (def-math-output-prepare (power-series)
   (let ((printer (make-instance 'mo-printer)))
     (print-power-series printer power-series)
@@ -113,3 +111,36 @@
 (def-gm-method truncate power-series:series-truncate 1 power-series-presentation)
 (def-gm-method remainder power-series:series-remainder 1 power-series-presentation)
 
+;;; TODO output from applying valuations on math object
+(def-math-output-prepare (vc:polynomial-values)
+  (let ((printer (make-instance 'mo-printer)))
+    (print-polynomial-simple printer vc:polynomial-values)
+    (finish printer)
+    ;; FIXME problem with zero polynomial
+    (assert (length=1 (incoming-stack printer)))
+    (first (incoming-stack printer))))
+
+(def-math-output-prepare (vc:power-series-values)
+  (let ((printer (make-instance 'mo-printer)))
+    (print-power-series-simple printer vc:power-series-values)
+    (finish printer)
+    (assert (length=1 (incoming-stack printer)))
+    (first (incoming-stack printer))))
+
+(defmethod math-object-presentation
+    ((valuations-coeff:polynomial-values
+      valuations-coeff:polynomial-values))
+  'valuations-coeff:polynomial-values)
+
+(defmethod math-object-presentation
+    ((valuations-coeff:power-series-values
+      valuations-coeff:power-series-values))
+  'valuations-coeff:power-series-values)
+
+(define-presentation-method present (object (type vc:polynomial-values) stream view &key)
+  (stream-add-math-output stream (math-output object stream)
+                          :line-break t))
+
+(define-presentation-method present (object (type vc:power-series-values) stream view &key)
+  (stream-add-math-output stream (math-output object stream)
+                          :line-break t))

@@ -15,6 +15,9 @@
          (prepare-extract-p integer *integer-output-mode*))
         (t (prepare-factorised integer))))
 
+(defmethod math-output-prepare ((symbol symbol))
+  symbol)
+
 (defun prepare-extract-p (rational p)
   (multiple-value-bind (order remfactors) (nt:ord-p p rational)
     (let ((*integer-output-mode* nil))

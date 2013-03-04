@@ -34,6 +34,7 @@
   (:shadowing-import-from :math-interactor :numerator :denominator)
   (:shadow :finish)
   (:use :clim-lisp :clim :ol :iterate
+        :infinite-math
         :math-interactor
         :polynomial-series-printing
         :polynomials

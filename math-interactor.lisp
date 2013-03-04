@@ -156,3 +156,14 @@
                  (mkstr "~&Factor out just "
                         integer
                         ".~%")))))
+
+(define-math-interactor-command (com-valuate-coeff :name "Valuate coefficientwise")
+    ((math-object 'math-object-presentation)
+     (valuation 'integer :prompt "valuation (prime number)"))
+  (put-result (vc:valuate-exp valuation math-object)))
+
+ (define-math-interactor-command (com-valuate :name "Valuate")
+    ((math-object 'math-object-presentation)
+     (valuation 'integer :prompt "valuation (prime number)"))
+  (put-result (vv:valuate-exp valuation math-object)))
+

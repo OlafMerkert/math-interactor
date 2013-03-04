@@ -65,7 +65,7 @@
             (format stream "a_~A = " index)
             (put-result (lazy-aref cf-ps:an index))))))
 
-(define-math-interactor-command (com-list-complete-quotients :name "Complete quotients")
+(define-math-interactor-command (com-list-complete-quotients-sqrt :name "Complete Sqrt quotients")
     ((cf 'continued-fraction-presentation) (start 'integer :default 0 :prompt "start") (end 'integer :prompt "end"))
   (cf-ps:with-cf2 cf
     (let ((stream (get-frame-pane *application-frame* 'mi::app)))
@@ -74,6 +74,14 @@
             (put-result (lazy-aref cf-ps:rn index))
             (format stream "s_~A = " index)
             (put-result (lazy-aref cf-ps:sn index))))))
+
+(define-math-interactor-command (com-list-complete-quotients :name "Complete quotients")
+    ((cf 'continued-fraction-presentation) (start 'integer :default 0 :prompt "start") (end 'integer :prompt "end"))
+  (cf-ps:with-cf2 cf
+    (let ((stream (get-frame-pane *application-frame* 'mi::app)))
+      (iter (for index from start to end)
+            (format stream "alpha_~A = " index)
+            (put-result (lazy-aref cf-ps:alphan index))))))
 
 ;; integration formula
 (define-math-interactor-command (com-integration-formula :name "Integration formula")

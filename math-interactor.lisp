@@ -139,12 +139,15 @@
 (define-math-interactor-command (com-series-term :name "Set series output precision")
     ((additional-terms 'integer :default 5 :prompt "nr of additional terms"))
   (setf polynomial-series-printing:print-additional-terms
-        additional-terms))
+        additional-terms)
+  (format (get-frame-pane *application-frame* 'int)
+          "~&Show ~A negative coefficients of laurent series.~%"
+          additional-terms))
 
 ;;; todo show fractions factorised
 (define-math-interactor-command (com-toggle-integer-display :name "Select integer display.")
     ((integer 'integer :default 0 :prompt "0 for no factorisation, -1 for complete factorisation or any single factor."))
-  (format (get-frame-pane *application-frame* 'app)
+  (format (get-frame-pane *application-frame* 'int)
           (cond ((zerop integer)
                  (setf gmo:*integer-output-mode* nil)
                  "~&No factorisation.~%")

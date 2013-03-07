@@ -61,8 +61,12 @@
 (define-basic-math-output (number () :primitive t)
   (princ number stream))
 
+;; TODO more general support for colouring stuff.
 (define-basic-math-output (integer () :primitive t)
-  (princ integer stream))
+  (with-drawing-options (stream :ink (cond ((minusp integer) +red+)
+                                           ((plusp integer) +blue+)
+                                           (t +foreground-ink+)))
+    (princ integer stream)))
 
 ;;; output of symbols and string
 (define-basic-math-output (string () :primitive t)

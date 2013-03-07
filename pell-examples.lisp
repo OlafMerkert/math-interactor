@@ -25,6 +25,8 @@
      (1 94 10113 8608 14464)          ; self computed times
                                         ; square factor
      (4 -60 249 -192 90 -36 9)       ; Leprévost
+     ;; random stuff
+     (1 0 7 8 9 0 5)
      )))
 
 (defun load-examples-in-bin ()

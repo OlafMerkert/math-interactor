@@ -13,6 +13,7 @@
                         :serial t
                         :components ((:file "simple")
                                      (:file "polynomials")
-                                     (:file "continued-fractions")))
+                                     (:file "continued-fractions")
+                                     (:file "alternative-continued-fractions")))
                ;; (:file "experiments")
                (:file "pell-examples")))

@@ -34,6 +34,9 @@
 
 (define-math-interactor-command (com-run-hooks :menu t :name "Load data")
     ()
+  ;; remove old displayed stuff
+  (window-clear (get-frame-pane *application-frame* 'bin))
+  ;; show anything stored in the *BIN* again
   (mapc #'funcall (reverse *math-interactor-load-data-hooks*)))
 
 ;; make the bin persistent
@@ -171,4 +174,3 @@
     ((math-object 'math-object-presentation)
      (valuation 'integer :prompt "valuation (prime number)"))
   (put-result (vv:valuate-exp valuation math-object)))
-

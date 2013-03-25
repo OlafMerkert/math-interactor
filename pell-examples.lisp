@@ -1,6 +1,6 @@
 (defpackage :pell-examples
   (:nicknames :pell)
-  (:shadowing-import-from :math-interactor :numerator :denominator)
+  (:shadowing-import-from :math-interactor :numerator :denominator :fraction)
   (:use :clim :clim-lisp
         :ol :iterate
         :math-interactor

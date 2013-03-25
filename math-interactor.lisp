@@ -144,7 +144,9 @@
           "~&Show ~A negative coefficients of laurent series.~%"
           additional-terms))
 
-;;; todo show fractions factorised
+;;; show fractions factorised
+
+;;; todo allow factorisation only over a specified set of places
 (define-math-interactor-command (com-toggle-integer-display :name "Select integer display.")
     ((integer 'integer :default 0 :prompt "0 for no factorisation, -1 for complete factorisation or any single factor."))
   (format (get-frame-pane *application-frame* 'int)

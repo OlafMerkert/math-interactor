@@ -12,6 +12,7 @@
                (:module "mu-output"
                         :serial t
                         :components ((:file "simple")
+                                     (:file "fractions")
                                      (:file "polynomials")
                                      (:file "continued-fractions")))
                ;; (:file "experiments")

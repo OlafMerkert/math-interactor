@@ -4,7 +4,8 @@
   (:use :clim :clim-lisp
         :ol :iterate
         :math-interactor
-        :polynomials)
+        :polynomials
+        :fractions)
   (:export))
 
 (in-package :pell-examples)
@@ -29,6 +30,26 @@
 
 (defun load-examples-in-bin ()
   (dolist (ex examples)
+    (put-result ex t))
+  (dolist (ex other-examples)
     (put-result ex t)))
 
 (add-mi-hook 'load-examples-in-bin)
+
+(defun poly-helper (coeff-table)
+  (make-instance
+   'polynomial
+   :coefficients (map 'vector
+                      (lambda (coeffs)
+                        (frac (make-instance
+                               'polynomial :var 'u
+                               :coefficients (list->array (mklist coeffs)))))
+                      coeff-table)))
+
+(defparameter other-examples
+  (mapcar
+   #'poly-helper
+   '((1 0 0 1 (1 0))
+     (1 0 0 0 0 1 (1 0)))))
+
+

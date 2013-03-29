@@ -3,96 +3,32 @@
 ;; create a nice output for polynomials (and series at the same
 ;; time)
 
-;; essentially, we just need to implement the interface from
-;; polynomial-series-printing, we are of course leaking abstractions
-;; badly
+(implement-printer-method print-math-object math-output-printer (object)
+  (math-output-prepare object))
 
-(defclass mo-printer ()
-  ((incoming-stack :initarg :incoming-stack
-         :initform nil
-         :accessor incoming-stack)
-   (incoming-mode :initarg :incoming-mode
-         :initform nil
-         :accessor incoming-mode)
-   (incoming-count :initarg :incoming-count
-         :initform nil
-         :accessor incoming-count)))
+(implement-printer-method print-superscript math-output-printer (base exponent)
+  ;; todo may need to call math-output-prepare on these
+  (superscript (math-output-prepare base) exponent))
 
-(defmethod print-number      ((printer mo-printer) number)
-  (push (math-output-prepare number)
-        (incoming-stack printer)))
+(implement-printer-method print-product math-output-printer (factors)
+  (finite-product factors))
 
-(defmethod print-superscript ((printer mo-printer) base exponent)
-  (push (superscript base exponent) (incoming-stack printer)))
+(implement-printer-method print-sum math-output-printer (summands-with-sign)
+  (finite-sum (mapcar #'first summands-with-sign)
+              (rest (mapcar #'second summands-with-sign))))
 
-(defmethod print-variable    ((printer mo-printer) variable)
-  (push variable (incoming-stack printer)))
-
-(defmethod print-spacer      ((printer mo-printer))
-  (cond ((eq :product (car (incoming-mode printer)))
-         (incf (first (incoming-count printer))))
-        (t
-         (push 2 (incoming-count printer)) ; we start off with two factors.
-         (push :product (incoming-mode printer)))))
-
-(defmethod print-operator    ((printer mo-printer) operator)
-  (assert (member operator '(+ -)))
-  (cond ((eq :sum (car (incoming-mode printer)))
-         (push operator (incoming-stack printer))
-         (incf (car (incoming-count printer)) 2))
-        ((eq :product (car (incoming-mode printer)))
-         (finish-product printer)
-         ;; recurse
-         (print-operator printer operator))
-        (t ;; start a new sum
-         (push operator (incoming-stack printer))
-         (push 3 (incoming-count printer)) ; we start off with two
-                                ; summands and one operator
-         (push :sum (incoming-mode printer)))))
-
-
-(defmethod print-ellipsis    ((printer mo-printer))
-  (push "..." (incoming-stack printer)))
-
-(defun finish-product (printer)
-  (unless (eq :product (pop (incoming-mode printer)))
-    (error "Illegal call to FINISH-PRODUCT."))
-  (let* ((factors (pop (incoming-count printer)))
-         (factors (reverse (popn factors (incoming-stack printer)))))
-    (push (finite-product  factors)
-          (incoming-stack printer))))
-
-(defun finish-sum (printer)
-  (unless (eq :sum (pop (incoming-mode printer)))
-    (error "Illegal call to FINISH-SUM."))
-  (let* ((summands+operators (pop (incoming-count printer)))
-         (summands+operators (reverse (popn summands+operators (incoming-stack printer)))))
-    (multiple-value-bind (summands operators) (splitn summands+operators 2)
-      (push (finite-sum summands operators)
-            (incoming-stack printer)))))
-
-(defun finish (printer)
-  (case (car (incoming-mode printer))
-    (:product (finish-product printer)
-              (finish printer))
-    (:sum (finish-sum printer)
-          (finish printer))))
+(implement-printer-method print-sum+ellipsis math-output-printer (summands-with-sign)
+  (finite-sum (append1 (mapcar #'first summands-with-sign) "...")
+              (append1 (rest (mapcar #'second summands-with-sign)) '+)))
 
 
 (def-math-output-prepare (polynomial)
-  (let ((printer (make-instance 'mo-printer)))
-    (print-polynomial printer polynomial)
-    (finish printer)
-    ;; FIXME problem with zero polynomial
-    (assert (length=1 (incoming-stack printer)))
-    (first (incoming-stack printer))))
+  (let ((*current-printer* 'math-output-printer))
+    (format-polynomial polynomial)))
 
 (def-math-output-prepare (power-series)
-  (let ((printer (make-instance 'mo-printer)))
-    (print-power-series printer power-series)
-    (finish printer)
-    (assert (length=1 (incoming-stack printer)))
-    (first (incoming-stack printer))))
+  (let ((*current-printer* 'math-output-printer))
+    (format-power-series power-series)))
 
 ;; TODO command history is not working properly
 ;; TODO the minus is a little small atm
@@ -113,19 +49,12 @@
 
 ;;; TODO output from applying valuations on math object
 (def-math-output-prepare (vc:polynomial-values)
-  (let ((printer (make-instance 'mo-printer)))
-    (print-polynomial-simple printer vc:polynomial-values)
-    (finish printer)
-    ;; FIXME problem with zero polynomial
-    (assert (length=1 (incoming-stack printer)))
-    (first (incoming-stack printer))))
+  (let ((*current-printer* 'math-output-printer))
+    (format-polynomial/all vc:polynomial-values)))
 
 (def-math-output-prepare (vc:power-series-values)
-  (let ((printer (make-instance 'mo-printer)))
-    (print-power-series-simple printer vc:power-series-values)
-    (finish printer)
-    (assert (length=1 (incoming-stack printer)))
-    (first (incoming-stack printer))))
+  (let ((*current-printer* 'math-output-printer))
+    (format-power-series/all vc:power-series-values)))
 
 (defmethod math-object-presentation
     ((valuations-coeff:polynomial-values
@@ -144,3 +73,6 @@
 (define-presentation-method present (object (type vc:power-series-values) stream view &key)
   (stream-add-math-output stream (math-output object stream)
                           :line-break t))
+
+;;; TODO is it possible with McCLIM to use nested presentation? would
+;;; be very useful

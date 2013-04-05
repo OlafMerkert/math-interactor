@@ -17,4 +17,5 @@
                                      (:file "continued-fractions")
                                      (:file "alternative-continued-fractions")))
                ;; (:file "experiments")
+               (:file "mathematica-export")
                (:file "pell-examples")))

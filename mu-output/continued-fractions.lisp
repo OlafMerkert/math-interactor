@@ -55,6 +55,7 @@
       (put-result q)
       (princ "p^2 - D q^2 = " stream)
       (put-result (gm:- (gm:expt p 2) (gm:* cf-ps:d q q))))))
+;;; FIXME get same output for p and q ????
 
 ;; partial and complete quotients
 (define-math-interactor-command (com-list-partial-quotients :name "Partial quotients")

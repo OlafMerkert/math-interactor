@@ -73,7 +73,10 @@
   (princ string stream))
 
 (define-basic-math-output (symbol () :primitive t)
-  (princ symbol stream))
+  (with-drawing-options (stream :ink (cond ((string-equal (symbol-name symbol) "U")
+                                            +green+)
+                                           (t +foreground-ink+)))
+    (princ symbol stream)))
 
 ;;; output of (explicit) fractions
 (define-basic-math-output (fraction (numerator denominator) :centering t)

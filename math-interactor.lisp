@@ -170,7 +170,14 @@
      (valuation 'integer :prompt "valuation (prime number)"))
   (put-result (vc:valuate-exp valuation math-object)))
 
- (define-math-interactor-command (com-valuate :name "Valuate")
+(define-math-interactor-command (com-valuate :name "Valuate")
     ((math-object 'math-object-presentation)
      (valuation 'integer :prompt "valuation (prime number)"))
   (put-result (vv:valuate-exp valuation math-object)))
+
+(define-math-interactor-command (com-ggt :name "GGT")
+    ((a 'math-object-presentation) (b 'math-object-presentation))
+  (put-result (fractions:ggt a b)))
+
+;;; TODO provide a macro to automatically generate commands from
+;;; math-utils operations

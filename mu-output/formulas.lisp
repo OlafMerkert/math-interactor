@@ -18,15 +18,15 @@
        (declare (ignorable n))
        ,@body)))
 
-(def-formula-prepare + 
-  (finite-sum (mapcar #'formula-prepare arguments)
-              (n-copies (- n 1) '+)))
-
-(def-formula-prepare =
-  (finite-sum (mapcar #'formula-prepare arguments)
-              (n-copies (- n 1) '=)))
+(bind-multi ((op + = >= <= > <))
+  (def-formula-prepare op
+    (finite-sum (mapcar #'formula-prepare arguments)
+                (n-copies (- n 1) 'op))))
 
 (def-formula-prepare * 
+  (finite-product (mapcar #'formula-prepare arguments)))
+
+(def-formula-prepare nil
   (finite-product (mapcar #'formula-prepare arguments)))
 
 (def-formula-prepare / 
@@ -63,3 +63,5 @@
                                   (t (error "invalid math-object-spec ~A" mo-spec)))))
                  math-objects)
      (formula-prepare ,formula)))
+
+;; TODO spacers

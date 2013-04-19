@@ -27,19 +27,19 @@
     (put-result/formula (cf)
                         `(= (cf D) ,cf))))
 
+;;; TODO enrich integer output here with integer presentation types.
 (define-math-interactor-command (com-check-quasi-period :name "Find (quasi)period" :menu t)
     ((cf 'continued-fraction-presentation)
      (bound 'integer :default 40 :prompt "bound"))
-  (let ((stream (get-frame-pane *application-frame* 'mi::app)))
-   (multiple-value-bind (period-length sn)
-       (cf-ps:find-pure-quasiperiod-length cf :length-bound bound)
-     (cond ((not period-length)
-            (format stream "~&No quasiperiod up to ~A found.~%" bound))
-           ((gm:one-p sn)
-            (format stream "~&Period length: ~A~%" period-length))
-           (t
-            (format stream "~&Quasi-period length: ~A   Period length: ~A~%"
-                    period-length (* 2 period-length)))))))
+  (multiple-value-bind (period-length sn)
+      (cf-ps:find-pure-quasiperiod-length cf :length-bound bound)
+    (cond ((not period-length)
+           (put-result/formula () `(> quasi-period-length ,bound)))
+          ((gm:one-p sn)
+           (put-result/formula () `(= period-length ,period-length)))
+          (t
+           (put-result/formula () `(= quasi-period-length ,period-length))
+           (put-result/formula () `(= period-length ,(* 2 period-length)))))))
 
 (define-math-interactor-command (com-continuants :name "Show continuants" :menu t)
     ((cf 'continued-fraction-presentation) (index 'integer :prompt "n"))

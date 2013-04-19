@@ -74,6 +74,8 @@
 (ew (setf (gethash 'integer math-object-presentation-table) 'number-presentation
           (gethash 'rational math-object-presentation-table) 'number-presentation))
 
+(def-mo-pres-type finite-fields:integer-mod)
+
       ;; TODO perhaps here we want to profit from different views.
 (define-presentation-method present (object (type math-object-presentation) stream view &key)
   (stream-add-math-output stream (math-output object stream)

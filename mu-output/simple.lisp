@@ -9,11 +9,14 @@
   output, or a prime integer P for splitting off it's powers.")
 
 (defmethod math-output-prepare ((integer integer))
-  (cond ((or (zerop integer)
-             (not *integer-output-mode*)) integer)
-        ((integerp *integer-output-mode*)
-         (prepare-extract-p integer *integer-output-mode*))
-        (t (prepare-factorised integer))))
+  (explicit-presentation
+   (cond ((or (zerop integer)
+              (not *integer-output-mode*)) integer)
+         ((integerp *integer-output-mode*)
+          (prepare-extract-p integer *integer-output-mode*))
+         (t (prepare-factorised integer)))
+   integer
+   'number-presentation))
 
 (defmethod math-output-prepare ((symbol symbol))
   symbol)
@@ -62,12 +65,16 @@
      (define-presentation-type ,(symb mo-type '-presentation) ()
        :inherit-from '(and math-object-presentation ,mo-type)
        :description ,description)
+     (ew (setf (gethash ',mo-type math-object-presentation-table)
+               ',(symb mo-type '-presentation)))
      (defmethod math-object-presentation ((,mo-type ,mo-type))
        ',(symb mo-type '-presentation))))
 
 (def-mo-pres-type number)
+(ew (setf (gethash 'integer math-object-presentation-table) 'number-presentation
+          (gethash 'rational math-object-presentation-table) 'number-presentation))
 
-;; TODO perhaps here we want to profit from different views.
+      ;; TODO perhaps here we want to profit from different views.
 (define-presentation-method present (object (type math-object-presentation) stream view &key)
   (stream-add-math-output stream (math-output object stream)
                           :line-break t))

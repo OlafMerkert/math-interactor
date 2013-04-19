@@ -45,7 +45,8 @@
      ;; it's important to use this one, not WITH-NEW-OUTPUT-RECORD,
      ;; otherwise we get problems with attaching stuff.
      (with-output-to-output-record (stream ',output-record-type new-record
-                                           :math-object ,type)
+                                           ;; :math-object ,type
+                                           )
        ,@body
        new-record)))
 
@@ -117,7 +118,7 @@
     (with-slots (summands operators) sum
       (cond ((= (length summands) (+ 1 (length operators))))
             ((null operators)
-             (setf operators (mapcar (constantly '+) (rest summands))))
+             (setf operators (n-copies (- (length summands) 1) '+)))
             (t (error "finite-sum: length of summands (~A) and operators (~A) do not match."
                       (length summands) (length operators)))))))
 
@@ -185,3 +186,11 @@
 ;; moment (ambiguity) 
 
 ;;; TODO parentheses and grouping
+
+;;; explicit marking of presentations
+(define-basic-math-output (explicit-presentation (rendering underlying-object presentation-type) :centering t)
+  (setf rendering (math-output (rendering explicit-presentation) stream))
+  (with-output-as-presentation (stream (underlying-object explicit-presentation)
+                                       (presentation-type explicit-presentation))
+    (stream-add-output-record stream rendering))
+  (setf (center-offset new-record) (center-offset rendering)))

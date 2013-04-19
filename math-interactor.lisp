@@ -46,8 +46,9 @@
 (defun put-result% (math-object pane-id)
   ;; for now, just dump stuff to app output
   (let ((stream (get-frame-pane *application-frame* pane-id)))
-    (present math-object (math-object-presentation math-object)
-             :stream stream)
+    ;; explicitly call prepare, so e.g. integers get enriched with presentations
+    (stream-add-math-output stream (math-output (math-output-prepare math-object) stream)
+                            :line-break t)
     (stream-replay stream)))
 
 (defun put-result (math-object &optional to-bin)
@@ -84,6 +85,8 @@
 ;; start off with the generic stuff.
 (define-presentation-type math-object-presentation ()
   :description "math object")
+
+(ew (defvar math-object-presentation-table (make-hash-table)))
 
 (defgeneric math-object-presentation (object))
 

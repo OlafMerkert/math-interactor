@@ -3,8 +3,8 @@
 ;;; the general protocoll for formatted math-output
 
 (defclass math-output-record (output-record)
-  ((math-object :initarg :math-object
-                :accessor math-object)))
+  (#|(math-object :initarg :math-object
+                :accessor math-object)|#))
 
 (defclass math-output-record/with-center (math-output-record)
   ((center-x :initform 0)

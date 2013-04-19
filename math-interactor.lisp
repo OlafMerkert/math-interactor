@@ -46,8 +46,14 @@
 (defun put-result% (math-object pane-id)
   ;; for now, just dump stuff to app output
   (let ((stream (get-frame-pane *application-frame* pane-id)))
-    ;; explicitly call prepare, so e.g. integers get enriched with presentations
-    (stream-add-math-output stream (math-output (math-output-prepare math-object) stream)
+    ;; explicitly call prepare, so e.g. integers get enriched with
+    ;; presentations, but first test that this thing has not already
+    ;; been prepared.
+    ;; TODO what about primitive stuff? should we worry about it?
+    (stream-add-math-output stream (math-output (if (basic-math-output-p math-object)
+                                                    math-object
+                                                    (math-output-prepare math-object))
+                                                stream)
                             :line-break t)
     (stream-replay stream)))
 
@@ -57,6 +63,9 @@
       (unless (member math-object *bin* :test #'gm:=)
         (push math-object *bin*)
         (put-result% math-object 'bin))))
+
+(defmacro put-result/formula (math-objects formula)
+  `(put-result% (formula-with-math-objects ,math-objects ,formula) 'app))
 
 ;; load stuff from bin on making new window
 (defun populate-from-bin ()
@@ -128,12 +137,12 @@
 (define-math-interactor-command (com-order-p :name "order of p")
     ((math-object 'math-object-presentation) (p 'integer :default 3 :prompt "prime"))
   (assert (nt:prime-p p))
-  (format #1=(get-frame-pane *application-frame* 'app) "ord_~A = " p)
   (multiple-value-bind (bound comment)
       (vv:valuate-exp p math-object)
-    (put-result bound)
+    (put-result/formula (bound)
+     `(= (_ ord ,p) ,bound))
     (when (eq comment :unbounded)
-      (format #1# " unbounded~%"))))
+      (format (get-frame-pane *application-frame* 'app) " unbounded~%"))))
 
 ;; allow on the fly input of new stuff
 (define-math-interactor-command (com-enter-polynomial :name t :menu t)

@@ -49,12 +49,10 @@
           (q (lazy-aref cf-ps:qn index))
           (stream (get-frame-pane *application-frame* 'mi::app)))
       ;; TODO typeset equation with symbols on the left.
-      (princ "p = " stream)
-      (put-result p)
-      (princ "q = " stream)
-      (put-result q)
-      (princ "p^2 - D q^2 = " stream)
-      (put-result (gm:- (gm:expt p 2) (gm:* cf-ps:d q q))))))
+      (put-result/formula (p) `(= p ,p))
+      (put-result/formula (q) `(= q ,q))
+      (put-result/formula ((pell (gm:- (gm:expt p 2) (gm:* cf-ps:d q q))))
+                          `(= (- (^ p 2) (* D (^ q 2))) ,pell)))))
 
 ;; partial and complete quotients
 (define-math-interactor-command (com-list-partial-quotients :name "Partial quotients")
@@ -62,26 +60,26 @@
   (cf-ps:with-cf2 cf
     (let ((stream (get-frame-pane *application-frame* 'mi::app)))
       (iter (for index from start to end)
-            (format stream "a_~A = " index)
-            (put-result (lazy-aref cf-ps:an index))))))
+            (put-result/formula ((an (lazy-aref cf-ps:an index)))
+                                `(= (_ a ,index) ,an))))))
 
 (define-math-interactor-command (com-list-complete-quotients-sqrt :name "Complete Sqrt quotients")
     ((cf 'continued-fraction-presentation) (start 'integer :default 0 :prompt "start") (end 'integer :prompt "end"))
   (cf-ps:with-cf2 cf
     (let ((stream (get-frame-pane *application-frame* 'mi::app)))
       (iter (for index from start to end)
-            (format stream "r_~A = " index)
-            (put-result (lazy-aref cf-ps:rn index))
-            (format stream "s_~A = " index)
-            (put-result (lazy-aref cf-ps:sn index))))))
+            (put-result/formula ((rn (lazy-aref cf-ps:rn index)))
+                                `(= (_ r ,index) ,rn))
+            (put-result/formula ((sn (lazy-aref cf-ps:sn index)))
+                                `(= (_ s ,index) ,sn))))))
 
 (define-math-interactor-command (com-list-complete-quotients :name "Complete quotients")
     ((cf 'continued-fraction-presentation) (start 'integer :default 0 :prompt "start") (end 'integer :prompt "end"))
   (cf-ps:with-cf2 cf
     (let ((stream (get-frame-pane *application-frame* 'mi::app)))
       (iter (for index from start to end)
-            (format stream "alpha_~A = " index)
-            (put-result (lazy-aref cf-ps:alphan index))))))
+            (put-result/formula ((alphan (lazy-aref cf-ps:alphan index)))
+                                `(= (_ alpha ,index) ,alphan))))))
 
 ;; integration formula
 (define-math-interactor-command (com-integration-formula :name "Integration formula")

@@ -50,6 +50,10 @@
   (superscript (formula-prepare (first arguments))
                (formula-prepare (second arguments))))
 
+(defmethod formula-prepare% ((function-symbol symbol) arguments)
+  ;; TODO put the arguments in brackets, perhaps separated by commas
+  (finite-product (list* function-symbol arguments)))
+
 
 (defmacro formula-with-math-objects (math-objects formula)
   `(let ,(mapcar (compose #`(,(first a1) (math-output-prepare ,(second a1)))

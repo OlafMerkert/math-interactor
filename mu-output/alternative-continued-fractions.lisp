@@ -5,9 +5,6 @@
   (let* ((radicand (gm:sqrt poly))
          (cf (make-instance 'cf-ps-a:alternative-continued-fraction
                             :starting radicand)))
-    (princ "D = ")
-    (put-result poly)
-    (princ "(sqrt D) = ")
-    (put-result radicand)
-    (princ "(cf D) = ")
-    (put-result cf)))
+    (put-result/formula (poly) `(= D ,poly))
+    (put-result/formula (radicand) `(= (sqrt D) ,radicand))
+    (put-result/formula (cf) `(= (cf D) ,cf))))

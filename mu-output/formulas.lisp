@@ -47,7 +47,7 @@
                (formula-prepare (second arguments))))
 
 (def-formula-prepare _
-  (superscript (formula-prepare (first arguments))
+  (subscript (formula-prepare (first arguments))
                (formula-prepare (second arguments))))
 
 (defmethod formula-prepare% ((function-symbol symbol) arguments)

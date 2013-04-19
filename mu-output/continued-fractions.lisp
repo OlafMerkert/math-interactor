@@ -34,16 +34,17 @@
   (multiple-value-bind (period-length sn)
       (cf-ps:find-pure-quasiperiod-length cf :length-bound bound)
     (cond ((not period-length)
-           (put-result/formula () `(> quasi-period-length ,bound)))
+           (put-result/formula () `(> quasi-period-length ,(as-int bound))))
           ((gm:one-p sn)
-           (put-result/formula () `(= period-length ,period-length)))
+           (put-result/formula () `(= period-length ,(as-int period-length))))
           (t
-           (put-result/formula () `(= quasi-period-length ,period-length))
-           (put-result/formula () `(= period-length ,(* 2 period-length)))))))
+           (put-result/formula () `(= quasi-period-length ,(as-int period-length)))
+           (put-result/formula () `(= period-length ,(as-int (* 2 period-length))))))))
 
 (define-math-interactor-command (com-continuants :name "Show continuants" :menu t)
-    ((cf 'continued-fraction-presentation) (index 'integer :prompt "n"))
+    ((cf 'continued-fraction-presentation) (index 'integer :prompt "n+1"))
   (cf-ps:with-cf2 cf
+    (decf index)
     (let ((p (lazy-aref cf-ps:pn index))
           (q (lazy-aref cf-ps:qn index)))
       ;; TODO typeset equation with symbols on the left.

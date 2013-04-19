@@ -38,7 +38,8 @@
    #:^
    #:formula-with-math-objects
    #:formula-prepare
-   #:put-result/formula))
+   #:put-result/formula
+   #:as-int))
 
 (defpackage :generic-math-output-implementation
   (:nicknames :gmo)

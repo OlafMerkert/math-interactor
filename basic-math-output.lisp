@@ -200,3 +200,6 @@
                                        (presentation-type explicit-presentation))
     (stream-add-output-record stream rendering))
   (setf (center-offset new-record) (center-offset rendering)))
+
+(defun as-int (integer)
+  (explicit-presentation integer integer 'integer))

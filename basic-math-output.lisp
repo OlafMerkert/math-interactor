@@ -14,6 +14,12 @@
       (princ s stream)
       new-operator)))
 
+(defclass basic-math-output ()
+  ())
+
+(defun basic-math-output-p (x)
+  (typep x 'basic-math-output))
+
 ;;; macros to take care of the boilerplate for establishing new basic types
 (defmacro define-basic-math-output-class (type slots+ &key centering primitive)
   "If CENTERING, "
@@ -21,7 +27,7 @@
         (slots (args->names slots+)))
     `(progn
        ,@(unless primitive
-                 `((defclass ,type ()
+                 `((defclass ,type (basic-math-output)
                      ,(mapcar #`(,a1 :initarg ,(keyw a1)
                                      :initform nil
                                      :reader ,a1) ; TODO maybe use accessor here

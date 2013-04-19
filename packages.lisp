@@ -32,7 +32,13 @@
    #:def-gm-method%
    #:explicit-presentation
    #:math-object-presentation-table
-   #:math-interactor))
+   #:math-interactor
+   #:basic-math-output-p
+   #:_
+   #:^
+   #:formula-with-math-objects
+   #:formula-prepare
+   #:put-result/formula))
 
 (defpackage :generic-math-output-implementation
   (:nicknames :gmo)
@@ -46,4 +52,8 @@
         :power-series)
   (:export
    #:math-output-prepare
-   #:*integer-output-mode*))
+   #:*integer-output-mode*
+   #:formula-with-math-objects
+   #:_
+   #:^
+   #:formula-prepare))

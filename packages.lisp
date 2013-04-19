@@ -28,7 +28,11 @@
    #:stream-add-math-output
    #:define-math-interactor-command
    #:add-mi-hook
-   #:insert-operators))
+   #:insert-operators
+   #:def-gm-method%
+   #:explicit-presentation
+   #:math-object-presentation-table
+   #:math-interactor))
 
 (defpackage :generic-math-output-implementation
   (:nicknames :gmo)

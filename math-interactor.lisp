@@ -72,12 +72,12 @@
     ((object 'math-object-presentation))
   (put-result object))
 
-(define-math-interactor-command (com-clear-bin :name "Clear bin")
+(define-math-interactor-command (com-clear-bin :name "Clear/bin")
     ()
   (setf *bin* nil)
   (window-clear (get-frame-pane *application-frame* 'bin)))
 
-(define-math-interactor-command (com-clear-app :name "Clear" :menu t)
+(define-math-interactor-command (com-clear-app :name "Clear/app" :menu t)
     ()
   (window-clear (get-frame-pane *application-frame* 'app)))
 
@@ -87,20 +87,22 @@
 
 (defgeneric math-object-presentation (object))
 
-(defmacro def-gm-method (com-name op-name
+(defmacro def-gm-method% (com-name op-name
                          &optional (num-args 1)
                                    (presentation-type 'math-object-presentation))
-  (let ((arguments (iter (for i from 1 to num-args)
-                         (collect (gensym "ARG")))))
+  `(def-gm-method ,com-name ,op-name ,@(n-copies num-args presentation-type)))
+
+(defmacro def-gm-method (com-name op-name &rest parameter-types)
+  (let ((arguments (list->gensyms :arg parameter-types)))
     `(define-math-interactor-command (,(symb 'com- com-name) :name t )
-         ,(mapcar #`(,a1 ',presentation-type) arguments)
+         ,(mapcar #2`(,a1 ',a2) arguments parameter-types)
        (put-result (,op-name ,@arguments)))))
 
-(def-gm-method plus gm:+ 2)
+(def-gm-method% plus gm:+ 2)
 
-(def-gm-method times gm:* 2)
+(def-gm-method% times gm:* 2)
 
-(def-gm-method divide gm:/ 2)
+(def-gm-method% divide gm:/ 2)
 
 ;; for polynomials, first convert to a power series
 (defun special-invert (object)
@@ -108,11 +110,11 @@
             (gm:-> 'power-series:power-series object)
             object)))
 
-(def-gm-method invert special-invert 1)
+(def-gm-method% invert special-invert 1)
 
-(def-gm-method sqrt gm:sqrt 1)
+(def-gm-method% sqrt gm:sqrt 1)
 
-(def-gm-method minus gm:- 1)
+(def-gm-method% minus gm:- 1)
 
 (define-math-interactor-command (com-reduce-modp :name "reduce mod p")
     ((math-object 'math-object-presentation) (p 'integer :default 3 :prompt "prime"))
@@ -175,9 +177,5 @@
      (valuation 'integer :prompt "valuation (prime number)"))
   (put-result (vv:valuate-exp valuation math-object)))
 
-(define-math-interactor-command (com-ggt :name "GGT")
-    ((a 'math-object-presentation) (b 'math-object-presentation))
-  (put-result (fractions:ggt a b)))
+(def-gm-method% ggt fractions:ggt 2)
 
-;;; TODO provide a macro to automatically generate commands from
-;;; math-utils operations

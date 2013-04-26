@@ -22,6 +22,10 @@
               (append1 (rest (mapcar #'second summands-with-sign)) '+)))
 
 
+;; presentations
+(def-mo-pres-type polynomial)
+(def-mo-pres-type power-series)
+
 (def-math-output-prepare (polynomial)
   (let ((*current-printer* 'math-output-printer))
     (format-polynomial polynomial)))
@@ -32,10 +36,6 @@
 
 ;; TODO command history is not working properly
 ;; TODO the minus is a little small atm
-
-;; presentations
-(def-mo-pres-type polynomial)
-(def-mo-pres-type power-series)
 
 ;; custom commands for polys and power series
 (def-gm-method% degree polynomials:degree

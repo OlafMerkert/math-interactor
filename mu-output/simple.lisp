@@ -2,6 +2,27 @@
 
 ;; output of various very simple data-structures
 
+(defmacro def-mo-pres-type (mo-type &optional description)
+  (unless description
+    (setf description
+          (string-downcase
+           (substitute #\space #\-
+                       (symbol-name mo-type)))))
+  `(progn
+     (define-presentation-type ,(symb mo-type '-presentation) ()
+       :inherit-from '(and math-object-presentation ,mo-type)
+       :description ,description)
+     (ew (setf (gethash ',mo-type math-object-presentation-table)
+               ',(symb mo-type '-presentation)))
+     (defmethod math-object-presentation ((,mo-type ,mo-type))
+       ',(symb mo-type '-presentation))))
+
+(def-mo-pres-type number)
+(ew (setf (gethash 'integer math-object-presentation-table) 'number-presentation
+          (gethash 'rational math-object-presentation-table) 'number-presentation))
+
+(def-mo-pres-type finite-fields:integer-mod)
+
 ;; also make rational stuff look nicer
 
 (defparameter *integer-output-mode* nil
@@ -53,30 +74,7 @@
                ;; TODO add some brackets
                (finite-fields:modulus finite-fields:integer-mod)))
 
-;; now pack everything up in presentations.
-
-(defmacro def-mo-pres-type (mo-type &optional description)
-  (unless description
-    (setf description
-          (string-downcase
-           (substitute #\space #\-
-                       (symbol-name mo-type)))))
-  `(progn
-     (define-presentation-type ,(symb mo-type '-presentation) ()
-       :inherit-from '(and math-object-presentation ,mo-type)
-       :description ,description)
-     (ew (setf (gethash ',mo-type math-object-presentation-table)
-               ',(symb mo-type '-presentation)))
-     (defmethod math-object-presentation ((,mo-type ,mo-type))
-       ',(symb mo-type '-presentation))))
-
-(def-mo-pres-type number)
-(ew (setf (gethash 'integer math-object-presentation-table) 'number-presentation
-          (gethash 'rational math-object-presentation-table) 'number-presentation))
-
-(def-mo-pres-type finite-fields:integer-mod)
-
-      ;; TODO perhaps here we want to profit from different views.
+;; TODO perhaps here we want to profit from different views.
 (define-presentation-method present (object (type math-object-presentation) stream view &key)
   (stream-add-math-output stream (math-output object stream)
                           :line-break t))

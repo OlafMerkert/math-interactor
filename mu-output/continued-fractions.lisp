@@ -2,6 +2,8 @@
 
 (defparameter *continued-fraction-display-length* 5)
 
+(def-mo-pres-type cf-ps:continued-fraction)
+
 (def-math-output-prepare (cf-ps:continued-fraction)
   (finite-continued-fraction
    (append1
@@ -11,8 +13,6 @@
                           *continued-fraction-display-length*
                           nil))
     "...")))
-
-(def-mo-pres-type cf-ps:continued-fraction)
 
 ;; provide error messages if we don't have a suitable gm:xxx method
 ;; for the given object

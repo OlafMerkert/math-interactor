@@ -17,7 +17,7 @@
 ;; provide error messages if we don't have a suitable gm:xxx method
 ;; for the given object
 
-(define-math-interactor-command (com-create-cf :name "CF expansion" :menu t)
+(define-math-interactor-command (com-create-cf-sqrt :name "CF expansion SQRT" :menu t)
     ((poly 'polynomial-presentation))
   (let ((cf (make-instance 'cf-ps:sqrt-continued-fraction
                            :radicand poly)))
@@ -26,6 +26,13 @@
                         `(= (sqrt D) ,sqrt))
     (put-result/formula (cf)
                         `(= (cf D) ,cf))))
+
+(define-math-interactor-command (com-create-cf :name "CF expansion")
+    ((series 'power-series-presentation))
+  (let ((cf (make-instance 'cf-ps:continued-fraction
+                           :starting series)))
+    (put-result/formula (series) `(= alpha ,series))
+    (put-result/formula (cf) `(= (cf alpha) ,cf))))
 
 ;;; TODO enrich integer output here with integer presentation types.
 (define-math-interactor-command (com-check-quasi-period :name "Find (quasi)period" :menu t)
@@ -56,7 +63,7 @@
 ;; partial and complete quotients
 (define-math-interactor-command (com-list-partial-quotients :name "Partial quotients")
     ((cf 'continued-fraction-presentation) (start 'integer :default 0 :prompt "start") (end 'integer :prompt "end"))
-  (cf-ps:with-cf2 cf
+  (cf-ps:with-cf cf
     (iter (for index from start to end)
           (put-result/formula ((an (lazy-aref cf-ps:an index)))
                               `(= (_ a ,index) ,an)))))
@@ -72,7 +79,7 @@
 
 (define-math-interactor-command (com-list-complete-quotients :name "Complete quotients")
     ((cf 'continued-fraction-presentation) (start 'integer :default 0 :prompt "start") (end 'integer :prompt "end"))
-  (cf-ps:with-cf2 cf
+  (cf-ps:with-cf cf
     (iter (for index from start to end)
           (put-result/formula ((alphan (lazy-aref cf-ps:alphan index)))
                               `(= (_ alpha ,index) ,alphan)))))

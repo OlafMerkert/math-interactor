@@ -34,6 +34,27 @@
     (put-result/formula (series) `(= alpha ,series))
     (put-result/formula (cf) `(= (cf alpha) ,cf))))
 
+(define-math-interactor-command (com-create-cf-quadratic :name "CF expansion quadratic")
+    ((poly 'polynomial-presentation :prompt "d")
+     (a 'polynomial-presentation :prompt "a")
+     (b 'polynomial-presentation :prompt "b")
+     (c 'polynomial-presentation :prompt "c"))
+  (let ((cf (make-instance 'cf-ps:quadratic-continued-fraction
+                           :radicand poly
+                           :a a :b b :c c)))
+    (put-result/formula ((d poly) a b c (alpha0 (cf-ps:starting cf)))
+                        `(= alpha
+                            (/ (+ a (* b (sqrt d)))
+                               c)
+                            (/ (+ ,a (* ,b (sqrt ,d)))
+                               ,c)
+                            ,alpha0))
+    (put-result/formula (cf)
+                        `(= (cf alpha) ,cf))))
+
+;; TODO allow direct input of polynomials as parameters, not just by
+;; clicking on presentations.
+
 ;;; TODO enrich integer output here with integer presentation types.
 (define-math-interactor-command (com-check-quasi-period :name "Find (quasi)period" :menu t)
     ((cf 'continued-fraction-presentation)

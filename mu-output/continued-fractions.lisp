@@ -55,7 +55,7 @@
 ;; TODO allow direct input of polynomials as parameters, not just by
 ;; clicking on presentations.
 
-;;; TODO enrich integer output here with integer presentation types.
+;;;  enrich integer output here with integer presentation types.
 (define-math-interactor-command (com-check-quasi-period :name "Find (quasi)period" :menu t)
     ((cf 'continued-fraction-presentation)
      (bound 'integer :default 40 :prompt "bound"))
@@ -75,7 +75,7 @@
     (decf index)
     (let ((p (lazy-aref cf-ps:pn index))
           (q (lazy-aref cf-ps:qn index)))
-      ;; TODO typeset equation with symbols on the left.
+      ;; typeset equation with symbols on the left.
       (put-result/formula (p) `(= p ,p))
       (put-result/formula (q) `(= q ,q))
       (put-result/formula ((pell (gm:- (gm:expt p 2) (gm:* cf-ps:d q q))))

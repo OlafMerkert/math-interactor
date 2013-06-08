@@ -73,6 +73,3 @@
 (define-presentation-method present (object (type vc:power-series-values) stream view &key)
   (stream-add-math-output stream (math-output object stream)
                           :line-break t))
-
-;;; TODO is it possible with McCLIM to use nested presentation? would
-;;; be very useful

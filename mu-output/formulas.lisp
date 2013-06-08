@@ -48,7 +48,7 @@
 
 (def-formula-prepare _
   (subscript (formula-prepare (first arguments))
-               (formula-prepare (second arguments))))
+             (formula-prepare (second arguments))))
 
 (defmethod formula-prepare% ((function-symbol symbol) arguments)
   ;; TODO put the arguments in brackets, perhaps separated by commas
@@ -65,3 +65,4 @@
      (formula-prepare ,formula)))
 
 ;; TODO spacers
+;; TODO text mixed into formulas.

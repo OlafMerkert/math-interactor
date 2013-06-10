@@ -17,7 +17,7 @@
 ;; provide error messages if we don't have a suitable gm:xxx method
 ;; for the given object
 
-(define-math-interactor-command (com-create-cf-sqrt :name "CF expansion SQRT" :menu t)
+(define-math-interactor-command (mi::com-create-cf-sqrt :name "CF expansion SQRT")
     ((poly 'polynomial-presentation))
   (let ((cf (make-instance 'cf-ps:sqrt-continued-fraction
                            :radicand poly)))
@@ -27,14 +27,14 @@
     (put-result/formula (cf)
                         `(= (cf D) ,cf))))
 
-(define-math-interactor-command (com-create-cf :name "CF expansion")
+(define-math-interactor-command (mi::com-create-cf :name "CF expansion")
     ((series 'power-series-presentation))
   (let ((cf (make-instance 'cf-ps:continued-fraction
                            :starting series)))
     (put-result/formula (series) `(= alpha ,series))
     (put-result/formula (cf) `(= (cf alpha) ,cf))))
 
-(define-math-interactor-command (com-create-cf-quadratic :name "CF expansion quadratic")
+(define-math-interactor-command (mi::com-create-cf-quadratic :name "CF expansion quadratic")
     ((poly 'polynomial-presentation :prompt "d")
      (a 'polynomial-presentation :prompt "a")
      (b 'polynomial-presentation :prompt "b")
@@ -56,7 +56,7 @@
 ;; clicking on presentations.
 
 ;;;  enrich integer output here with integer presentation types.
-(define-math-interactor-command (com-check-quasi-period :name "Find (quasi)period" :menu t)
+(define-math-interactor-command (mi::com-check-quasi-period :name "Find (quasi)period")
     ((cf 'continued-fraction-presentation)
      (bound 'integer :default 40 :prompt "bound"))
   (multiple-value-bind (period-length sn)
@@ -69,7 +69,7 @@
            (put-result/formula () `(= quasi-period-length ,(as-int period-length)))
            (put-result/formula () `(= period-length ,(as-int (* 2 period-length))))))))
 
-(define-math-interactor-command (com-continuants :name "Show continuants" :menu t)
+(define-math-interactor-command (mi::com-continuants :name "Show continuants")
     ((cf 'continued-fraction-presentation) (index 'integer :prompt "n+1"))
   (cf-ps:with-cf2 cf
     (decf index)
@@ -82,14 +82,14 @@
                           `(= (- (^ p 2) (* D (^ q 2))) ,pell)))))
 
 ;; partial and complete quotients
-(define-math-interactor-command (com-list-partial-quotients :name "Partial quotients")
+(define-math-interactor-command (mi::com-list-partial-quotients :name "Partial quotients")
     ((cf 'continued-fraction-presentation) (start 'integer :default 0 :prompt "start") (end 'integer :prompt "end"))
   (cf-ps:with-cf cf
     (iter (for index from start to end)
           (put-result/formula ((an (lazy-aref cf-ps:an index)))
                               `(= (_ a ,index) ,an)))))
 
-(define-math-interactor-command (com-list-complete-quotients-sqrt :name "Complete Sqrt quotients")
+(define-math-interactor-command (mi::com-list-complete-quotients-sqrt :name "Complete Sqrt quotients")
     ((cf 'continued-fraction-presentation) (start 'integer :default 0 :prompt "start") (end 'integer :prompt "end"))
   (cf-ps:with-cf2 cf
     (iter (for index from start to end)
@@ -98,7 +98,7 @@
           (put-result/formula ((sn (lazy-aref cf-ps:sn index)))
                               `(= (_ s ,index) ,sn)))))
 
-(define-math-interactor-command (com-list-complete-quotients :name "Complete quotients")
+(define-math-interactor-command (mi::com-list-complete-quotients :name "Complete quotients")
     ((cf 'continued-fraction-presentation) (start 'integer :default 0 :prompt "start") (end 'integer :prompt "end"))
   (cf-ps:with-cf cf
     (iter (for index from start to end)
@@ -106,7 +106,7 @@
                               `(= (_ alpha ,index) ,alphan)))))
 
 ;; integration formula
-(define-math-interactor-command (com-integration-formula :name "Integration formula")
+(define-math-interactor-command (mi::com-integration-formula :name "Integration formula")
     ((cf 'continued-fraction-presentation) (index 'integer :prompt "n"))
   (cf-ps:with-cf2 cf
     (let ((p (lazy-aref cf-ps:pn index))
@@ -116,7 +116,7 @@
                           `(= f ,f)))))
 
 ;; check for torsion point
-(define-math-interactor-command (com-check-torsion :name "Check torsion")
+(define-math-interactor-command (mi::com-check-torsion :name "Check torsion")
     ((object '(or continued-fraction-presentation
                polynomial-presentation)
              :prompt "polynomial or continued fraction"))

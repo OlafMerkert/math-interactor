@@ -49,7 +49,7 @@
       (mapc (lambda (x) (mathematica-export x stream))
             (splice-in " " (mi:factors obj)))))
 
-(mi:define-math-interactor-command (com-mathematica-export :name t :menu t)
+(mi:define-math-interactor-command (mi::com-mathematica-export :name t)
     ((math-object 'mi:math-object-presentation))
   (let ((stream
          (clim:get-frame-pane clim:*application-frame* 'mi::int)))

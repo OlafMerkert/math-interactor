@@ -2,6 +2,7 @@
 
 (define-application-frame math-interactor ()
   ()
+  (:menu-bar menubar-cmds)
   (:panes (app :application
                :width 800 :height 600
                :incremental-redisplay t
@@ -29,10 +30,10 @@
   (run-frame-top-level (make-instance 'math-interactor)))
 
 ;; define a command to exit
-(define-math-interactor-command (com-quit :menu nil :name "Quit") ()
+(define-math-interactor-command (com-quit :name "Quit") ()
   (frame-exit *application-frame*))
 
-(define-math-interactor-command (com-run-hooks :menu t :name "Load data")
+(define-math-interactor-command (com-run-hooks :name "Load data")
     ()
   ;; remove old displayed stuff
   (window-clear (get-frame-pane *application-frame* 'bin))
@@ -74,11 +75,11 @@
 
 (add-mi-hook 'populate-from-bin)
 
-(define-math-interactor-command (com-put-to-bin :menu t :name "Copy/bin")
+(define-math-interactor-command (com-put-to-bin :name "Copy/bin")
     ((object 'math-object-presentation))
   (put-result object t))
 
-(define-math-interactor-command (com-put-to-app :menu t :name "Copy/app")
+(define-math-interactor-command (com-put-to-app :name "Copy/app")
     ((object 'math-object-presentation))
   (put-result object))
 
@@ -87,7 +88,7 @@
   (setf *bin* nil)
   (window-clear (get-frame-pane *application-frame* 'bin)))
 
-(define-math-interactor-command (com-clear-app :name "Clear/app" :menu t)
+(define-math-interactor-command (com-clear-app :name "Clear/app")
     ()
   (window-clear (get-frame-pane *application-frame* 'app)))
 
@@ -145,7 +146,7 @@
       (format (get-frame-pane *application-frame* 'app) " unbounded~%"))))
 
 ;; allow on the fly input of new stuff
-(define-math-interactor-command (com-enter-polynomial :name t :menu t)
+(define-math-interactor-command (com-enter-polynomial :name t)
     ((coeff-string 'string :prompt "coefficients"))
   ;; TODO make polynomial input less hackish
   (let ((coeffs (read-from-string (concatenate 'string "(" coeff-string ")"))))
@@ -179,7 +180,7 @@
                         integer
                         ".~%")))))
 
-(define-math-interactor-command (com-valuate-coeff :name "Valuate coefficientwise" :menu t)
+(define-math-interactor-command (com-valuate-coeff :name "Valuate coefficientwise")
     ((math-object 'math-object-presentation)
      (valuation 'integer :prompt "valuation (prime number)"))
   (put-result (vc:valuate-exp valuation math-object)))
@@ -190,4 +191,3 @@
   (put-result (vv:valuate-exp valuation math-object)))
 
 (def-gm-method% ggt fractions:ggt 2)
-

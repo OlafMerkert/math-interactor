@@ -20,4 +20,6 @@
                              ))
                ;; (:file "experiments")
                (:file "mathematica-export")
-               (:file "pell-examples")))
+               (:file "math-interactor-menus")
+               (:file "pell-examples")
+))

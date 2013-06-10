@@ -212,7 +212,7 @@
 ;; TODO superscript and fractions don't work well together at the
 ;; moment (ambiguity) 
 
-;;; TODO parentheses and grouping
+;;; TODO grouping / tables
 
 ;;; explicit marking of presentations
 (define-basic-math-output (explicit-presentation (rendering underlying-object presentation-type) :centering t)

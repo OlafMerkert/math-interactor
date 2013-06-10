@@ -52,7 +52,10 @@
 
 (defmethod formula-prepare% ((function-symbol symbol) arguments)
   ;; TODO put the arguments in brackets, perhaps separated by commas
-  (finite-product (list function-symbol (parens (finite-product arguments)))))
+  (finite-product
+   (list function-symbol
+         (parens (finite-product
+                        (mapcar #'formula-prepare arguments))))))
 
 
 (defmacro formula-with-math-objects (math-objects formula)

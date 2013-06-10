@@ -123,14 +123,18 @@
   (let ((stream (get-frame-pane *application-frame* 'mi::app)))
     (multiple-value-bind (order point curve) (cf-ps:check-torsion-divisor object)
       ;; this stuff might be interesting to some people
-      ;; TODO use formula output
-      ;; TODO figure out how to mix text and math stuff
       (format stream "~&Point (~A, ~A) on Y^2 = X^3 + ~A X + ~A~%"
               (ec-ws:x point) (ec-ws:y point)
               (ec-ws:ws-a curve) (ec-ws:ws-b curve))
-      (if order
-          (format stream "~&[O_1] - [O_2] has finite order ~A.~%" order)
-          (format stream "~&[O_1] - [O_2] is not torsion.~%")))))
+      (put-result/formula (point
+                           (a (ec-ws:ws-a curve))
+                           (b (ec-ws:ws-b curve)))
+                          `(nil ,point " on "
+                                (= (^ y 2) (+ (^ x 3) (* ,a x) ,b))))
+      ;; TODO symbol for infinity?
+      (put-result/formula ((order (if order order "infinite")))
+                          `(= (ord (- (_ O 1) (_ O 2)))
+                              ,order)))))
+
 
 ;;; TODO allow exporting the app view of the math-interactor to TeX or something.
-;;; TODO replace format calls wiht put-result/formula, even for text

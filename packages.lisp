@@ -43,7 +43,10 @@
    #:parens
    #:left
    #:right
-   #:center))
+   #:center
+   #:coordinates
+   #:finite-tuple
+   #:tuple))
 
 (defpackage :generic-math-output-implementation
   (:nicknames :gmo)

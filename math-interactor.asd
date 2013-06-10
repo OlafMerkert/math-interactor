@@ -17,6 +17,7 @@
                                      (:file "polynomials")
                                      (:file "continued-fractions")
                                      (:file "alternative-continued-fractions")
+                                     (:file "elliptic-curves")
                              ))
                ;; (:file "experiments")
                (:file "mathematica-export")

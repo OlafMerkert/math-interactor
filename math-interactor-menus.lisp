@@ -1,7 +1,7 @@
 (in-package :math-interactor)
 
 
-;;; TODO menu entries
+;;; menu entries
 (make-command-table 'manage-cmds :errorp nil
                     :menu '(("Load data" :command com-run-hooks)
                             ("Copy/bin"  :command com-put-to-bin)

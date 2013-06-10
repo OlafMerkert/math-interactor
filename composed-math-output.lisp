@@ -5,8 +5,8 @@
 
 (defclass finite-continued-fraction ()
   ((partial-quotients :initarg :partial-quotients
-         :initform nil
-         :accessor partial-quotients)))
+                      :initform nil
+                      :accessor partial-quotients)))
 
 (defun simple-cf-p (finite-continued-fraction)
   (length=1 (partial-quotients finite-continued-fraction)))
@@ -27,3 +27,21 @@
 
 (defun finite-continued-fraction (partial-quotients)
   (make-instance 'finite-continued-fraction :partial-quotients partial-quotients))
+
+(defclass finite-tuple ()
+  ((coordinates :initarg :coordinates
+                :initform nil
+                :accessor coordinates)))
+
+(defmethod math-output ((finite-tuple finite-tuple) stream)
+  (math-output
+   (parens (finite-sum (coordinates finite-tuple)
+                       (n-copies (- (length (coordinates finite-tuple)) 1)
+                                 #\,)))
+   stream))
+
+(defun finite-tuple (coordinates)
+  (make-instance 'finite-tuple :coordinates coordinates))
+
+(defun tuple (&rest coordinates)
+  (finite-tuple coordinates))

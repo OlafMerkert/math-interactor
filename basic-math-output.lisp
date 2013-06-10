@@ -79,6 +79,9 @@
 (define-basic-math-output (string () :primitive t)
   (princ string stream))
 
+(define-basic-math-output (character () :primitive t)
+  (princ character stream))
+
 (define-basic-math-output (symbol () :primitive t)
   (with-drawing-options (stream :ink (cond ((string-equal (symbol-name symbol) "U")
                                             +green+)
@@ -187,6 +190,24 @@
     ;; horizontal center is just the usual center.
     (setf (center-offset new-record) (values (floor (+ b-w e-w) 2)
                                              (+ b-o e-o)))))
+
+(defun px->pp (x)
+  x)
+
+(define-basic-math-output (parens (center &optional (left #\() (right #\)))
+                                  :centering t)
+  (setf center (math-output (center parens) stream))
+  (stream-add-output-record stream center)
+  (with-text-size (stream (px->pp (rectangle-height center)))
+    (let ((left (math-output (left parens) stream))
+          (right (math-output (right parens) stream))
+          (*math-horizontal-spacing* 0))
+      (stream-add-output-record stream left)
+      (stream-add-output-record stream right)
+      (setf (center-offset new-record)
+            (align-output-records (list left center right)
+                                  #'stacking-align
+                                  #'centering-align)))))
 
 ;; TODO superscript and fractions don't work well together at the
 ;; moment (ambiguity) 

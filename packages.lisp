@@ -39,7 +39,11 @@
    #:formula-with-math-objects
    #:formula-prepare
    #:put-result/formula
-   #:as-int))
+   #:as-int
+   #:parens
+   #:left
+   #:right
+   #:center))
 
 (defpackage :generic-math-output-implementation
   (:nicknames :gmo)

@@ -148,3 +148,7 @@ the app pane. See also `formula-with-math-objects'."
                         ".~%")))))
 
 
+;; TODO allow exporting the app view of the math-interactor to TeX or something.
+
+;; TODO allow direct input of polynomials as parameters, not just by
+;; clicking on presentations.

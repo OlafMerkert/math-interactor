@@ -3,11 +3,11 @@
 
 ;;; menu entries
 (make-command-table 'manage-cmds :errorp nil
-                    :menu '(("Load data" :command com-run-hooks)
-                            ("Copy/bin"  :command com-put-to-bin)
-                            ("Copy/app"  :command com-put-to-app)
-                            ("Clear/bin" :command com-clear-bin)
-                            ("Clear/app" :command com-clear-app)))
+                    :menu '(("Load data"   :command com-run-hooks)
+                            ("Copy to bin" :command com-put-to-bin)
+                            ("Copy to app" :command com-put-to-app)
+                            ("Clear bin"   :command com-clear-bin)
+                            ("Clear app"   :command com-clear-app)))
 
 (make-command-table 'input-cmds :errorp nil
                     :menu '(("Enter polynomial" :command com-enter-polynomial)))
@@ -48,4 +48,5 @@
                             ("Basic math"          :menu basic-math-ops)
                             ("Valuations"          :menu valuation-ops)
                             ("Continued fractions" :menu contfrac-ops)
-                            ("Export"              :menu output-cmds)))
+                            ("Export"              :menu output-cmds)
+                            ("Quit"                :command com-quit)))

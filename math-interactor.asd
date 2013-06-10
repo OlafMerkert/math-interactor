@@ -21,6 +21,9 @@
                              ))
                ;; (:file "experiments")
                (:file "mathematica-export")
-               (:file "math-interactor-menus")
+               (:module "commands"
+                        :series t
+                        :depends-on ((:file "math-commands")
+                                     (:file "math-interactor-menus")))
                (:file "pell-examples")
 ))

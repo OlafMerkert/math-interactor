@@ -61,3 +61,12 @@
      (valuation 'integer :prompt "valuation (prime number)"))
   (put-result (vv:valuate-exp valuation math-object)))
 
+;;; polynomials and power series
+(def-gm-method% degree polynomials:degree
+  1 (or polynomial-presentation power-series-presentation))
+
+(def-gm-method% leading-coefficient polynomials:leading-coefficient
+  1  (or polynomial-presentation power-series-presentation))
+
+(def-gm-method% truncate power-series:series-truncate 1 power-series-presentation)
+(def-gm-method% remainder power-series:series-remainder 1 power-series-presentation)

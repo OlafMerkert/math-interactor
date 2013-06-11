@@ -26,35 +26,13 @@
 (def-mo-pres-type polynomial)
 (def-mo-pres-type power-series)
 
-(def-math-output-prepare (polynomial)
-  (let ((*current-printer* 'math-output-printer))
-    (format-polynomial polynomial)))
 
-(def-math-output-prepare (power-series)
-  (let ((*current-printer* 'math-output-printer))
-    (format-power-series power-series)))
 
 ;; TODO command history is not working properly
 ;; TODO the minus is a little small atm
 
-;; custom commands for polys and power series
-(def-gm-method% degree polynomials:degree
-  1 (or polynomial-presentation power-series-presentation))
-
-(def-gm-method% leading-coefficient polynomials:leading-coefficient
-  1  (or polynomial-presentation power-series-presentation))
-
-(def-gm-method% truncate power-series:series-truncate 1 power-series-presentation)
-(def-gm-method% remainder power-series:series-remainder 1 power-series-presentation)
 
 ;;; TODO output from applying valuations on math object
-(def-math-output-prepare (vc:polynomial-values)
-  (let ((*current-printer* 'math-output-printer))
-    (format-polynomial/all vc:polynomial-values)))
-
-(def-math-output-prepare (vc:power-series-values)
-  (let ((*current-printer* 'math-output-printer))
-    (format-power-series/all vc:power-series-values)))
 
 (defmethod math-object-presentation
     ((valuations-coeff:polynomial-values

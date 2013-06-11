@@ -27,6 +27,12 @@
                             ("Valuate" :command com-valuate)
                             ("Valuate coefficientwise" :command com-valuate-coeff)))
 
+(make-command-table 'polynomial-ops :errorp nil
+                    :menu '(("Degree" :command com-degree)
+                            ("Leading Coefficient" :command com-leading-coefficient)
+                            ("Polynomial part" :command com-truncate)
+                            ("Power series part" :command com-remainder)))
+
 (make-command-table 'contfrac-ops :errorp nil
                     :menu '(("CF expansion"            :command com-create-cf)
                             ("CF expansion SQRT"       :command com-create-cf-sqrt)
@@ -47,6 +53,7 @@
                             ("Input"               :menu input-cmds)
                             ("Basic math"          :menu basic-math-ops)
                             ("Valuations"          :menu valuation-ops)
+                            ("Polynomials"         :menu polynomial-ops)
                             ("Continued fractions" :menu contfrac-ops)
                             ;; ("Export"              :menu output-cmds)
                             ("Quit"                :command com-quit)))

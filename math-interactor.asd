@@ -1,7 +1,8 @@
 (defsystem math-interactor
   :depends-on (ol-utils mcclim iterate
                         math-utils
-                        continued-fractions)
+                        continued-fractions
+                        math-formatter)
   :serial t
   :components ((:file "packages")
                (:file "math-interactor")
@@ -16,14 +17,13 @@
                                      (:file "fractions")
                                      (:file "polynomials")
                                      (:file "continued-fractions")
-                                     (:file "alternative-continued-fractions")
                                      (:file "elliptic-curves")
                              ))
                ;; (:file "experiments")
                ;; (:file "mathematica-export")
                (:module "commands"
-                        :series t
-                        :depends-on ((:file "math-commands")
+                        :serial t
+                        :components ((:file "math-commands")
                                      (:file "math-interactor-menus")))
                (:file "pell-examples")
 ))

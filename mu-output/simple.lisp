@@ -116,3 +116,6 @@
 
 (defmethod math-output ((infinity (eql infinity-)) stream)
   (math-output "-inf" stream))
+
+;; cont frac
+(def-mo-pres-type cf-ps:continued-fraction)

@@ -1,23 +1,5 @@
 (in-package :math-interactor)
 
-;;; the general protocoll for formatted math-output
-
-
-
-(defgeneric math-output (math-object stream))
-
-(defmethod math-output :before (math-object stream)
-  (when (typep math-object 'math-output-record)
-    (error "Cannot call math-output on output-records!")))
-
-
-
-;;; treat math operators specially
-(defclass operator-math-output-record (math-output-record
-                                       standard-sequence-output-record)
-  ())
-
-
 ;;; helper functions for managing cursor advancement
 (defun stream-add-math-output (stream math-output
                                &key (line-break nil) (move-cursor t))

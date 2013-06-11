@@ -49,8 +49,11 @@
    #:tuple))
 
 (defpackage :render-to-clim
+  (:nicknames :rtc)
   (:use :clim :clim-lisp :ol :iterate)
-  (:export))
+  (:export
+   #:render
+   #:advance-cursor))
 
 (defpackage :generic-math-output-implementation
   (:nicknames :gmo)

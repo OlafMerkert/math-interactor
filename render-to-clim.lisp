@@ -10,7 +10,7 @@
                                     'math-output-record)
                               new-record)
        (flet ((pr (x) (princ x stream))
-                                           (fmt  (&rest args) (apply #'format stream args))
+              (fmt (&rest args) (apply #'format stream args))
               (rndr (x) (render x stream)))
          ;; TODO apply scaling and colour 
          ,@body
@@ -55,7 +55,7 @@
 ;; TODO scaling of exponent and index 
 (def-render-method (superscript :center t)
   (let ((base (rndr (mft:base superscript)))
-        (exponent (rndr (mft:exponent superscript :center t))))
+        (exponent (rndr (mft:exponent superscript))))
     (let ((b-w (rectangle-width base))
           (e-w (rectangle-width exponent))
           (b-o (nth-value 1 (center-offset base)))
@@ -134,3 +134,20 @@
               (center-offset (rndr (mft:body object-data)))))
       (rndr (mft:body object-data))))
 
+(defun advance-cursor (math-output stream &key (line-break nil) (move-cursor t))
+    "Output the computed output-record `math-output' into `stream'. If
+  `line-break' is t, move the stream-cursor to the beginning of the
+  \"next line\". Otherwise, if `move-cursor' is t, move the
+  stream-cursor to the end of the \"current line\". Otherwise, do not
+  chnage the cursor position."
+    (setf (output-record-position math-output) (stream-cursor-position stream))
+    (cond (line-break
+         (multiple-value-bind (x y) (stream-cursor-position stream)
+           (declare (ignore x))
+           (setf (stream-cursor-position stream)
+                 (values 0 (+ y (rectangle-height math-output))))))
+        (move-cursor
+         (multiple-value-bind (x y) (stream-cursor-position stream)
+           (setf (stream-cursor-position stream)
+                 (values (+ x (rectangle-width math-output) *math-horizontal-spacing*) y)))))
+    math-output)

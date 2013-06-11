@@ -5,18 +5,14 @@
                         math-formatter)
   :serial t
   :components ((:file "packages")
-               (:file "math-interactor")
                (:file "math-presentations")
                (:file "alignment")
                (:file "render-to-clim")
-               (:file "math-output")
-               (:file "basic-math-output")
-               (:file "composed-math-output")
+               (:file "math-interactor")
                (:module "mu-output"
                         :serial t
                         :components ((:file "simple")
                                      (:file "formulas")
-                                     (:file "polynomials")
                                      ))
                ;; (:file "experiments")
                ;; (:file "mathematica-export")

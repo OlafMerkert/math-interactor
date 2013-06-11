@@ -51,16 +51,18 @@ and continued fractions of power series."
 (defun put-result% (math-object pane-id)
   "Given a `math-object', produce a CLIM rendering of it and just
 append it to the desired pane identified with `pane-id'."
-  (let ((stream (get-frame-pane *application-frame* pane-id)))
+  (let ((stream (get-frame-pane *application-frame* pane-id))
+        (math-utils-format:*print-poly-pretty* t))
     ;; explicitly call prepare, so e.g. integers get enriched with
     ;; presentations, but first test that this thing has not already
     ;; been prepared.
     ;; TODO what about primitive stuff? should we worry about it?
-    (stream-add-math-output stream (math-output (if (basic-math-output-p math-object)
-                                                    math-object
-                                                    (math-output-prepare math-object))
-                                                stream)
-                            :line-break t)
+    (rtc:advance-cursor
+     (rtc:render (if (mft:formatted-p math-object) math-object
+                     (math-utils-format:format math-object))
+                 stream)
+     stream
+     :line-break t)
     (stream-replay stream)))
 
 (defun put-result (math-object &optional to-bin)
@@ -125,8 +127,8 @@ the app pane. See also `formula-with-math-objects'."
 ;;; 
 (define-math-interactor-command (com-series-term :name "Set series output precision")
     ((additional-terms 'integer :default 5 :prompt "nr of additional terms"))
-  (setf polynomial-series-printing:print-additional-terms
-        additional-terms)
+  #|(setf polynomial-series-printing:print-additional-terms
+        additional-terms)|#
   (format (get-frame-pane *application-frame* 'int)
           "~&Show ~A negative coefficients of laurent series.~%"
           additional-terms))

@@ -6,19 +6,6 @@
   "possible values are NIL for default output, T for factorised
   output, or a prime integer P for splitting off it's powers.")
 
-(defmethod math-output-prepare ((integer integer))
-  (explicit-presentation
-   (cond ((or (zerop integer)
-              (not *integer-output-mode*)) integer)
-         ((integerp *integer-output-mode*)
-          (prepare-extract-p integer *integer-output-mode*))
-         (t (prepare-factorised integer)))
-   integer
-   'number-presentation))
-
-(defmethod math-output-prepare ((symbol symbol))
-  symbol)
-
 (defun prepare-extract-p (rational p)
   (multiple-value-bind (order remfactors) (nt:ord-p p rational)
     (let ((*integer-output-mode* nil))
@@ -36,20 +23,6 @@
                      (superscript (car x) (cdr x))
                      x))
                (nt:factorise integer)))))
-
-(def-math-output-prepare (rational)
-  (cond ((not *integer-output-mode*)
-         (fraction (cl:numerator rational) (cl:denominator rational)))
-        ((integerp *integer-output-mode*)
-         (prepare-extract-p rational *integer-output-mode*))
-        (t
-         (fraction (prepare-factorised (cl:numerator rational))
-                   (prepare-factorised (cl:denominator rational))))))
-
-(def-math-output-prepare (finite-fields:integer-mod)
-  (subscript (finite-fields:remainder finite-fields:integer-mod)
-               ;; TODO add some brackets
-               (finite-fields:modulus finite-fields:integer-mod)))
 
 ;; TODO perhaps here we want to profit from different views.
 (define-presentation-method present (object (type math-object-presentation) stream view &key)
@@ -82,14 +55,3 @@
 
 ;;; TODO output of symbols for infinity // generally unicode output
 
-(defmethod math-output-prepare ((infinity (eql infinity+)))
-  "inf")
-
-(defmethod math-output ((infinity (eql infinity+)) stream)
-  (math-output "inf" stream))
-
-(defmethod math-output-prepare ((infinity (eql infinity-)))
-  "-inf")
-
-(defmethod math-output ((infinity (eql infinity-)) stream)
-  (math-output "-inf" stream))

@@ -48,6 +48,10 @@
    #:finite-tuple
    #:tuple))
 
+(defpackage :render-to-clim
+  (:use :clim :clim-lisp :ol :iterate)
+  (:export))
+
 (defpackage :generic-math-output-implementation
   (:nicknames :gmo)
   (:shadowing-import-from :math-interactor :numerator :denominator)
@@ -55,7 +59,6 @@
   (:use :clim-lisp :clim :ol :iterate
         :infinite-math
         :math-interactor
-        :polynomial-series-printing
         :polynomials
         :power-series)
   (:export

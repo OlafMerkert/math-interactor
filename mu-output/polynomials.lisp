@@ -22,9 +22,6 @@
               (append1 (rest (mapcar #'second summands-with-sign)) '+)))
 
 
-;; presentations
-(def-mo-pres-type polynomial)
-(def-mo-pres-type power-series)
 
 
 
@@ -32,17 +29,6 @@
 ;; TODO the minus is a little small atm
 
 
-;;; TODO output from applying valuations on math object
-
-(defmethod math-object-presentation
-    ((valuations-coeff:polynomial-values
-      valuations-coeff:polynomial-values))
-  'valuations-coeff:polynomial-values)
-
-(defmethod math-object-presentation
-    ((valuations-coeff:power-series-values
-      valuations-coeff:power-series-values))
-  'valuations-coeff:power-series-values)
 
 (define-presentation-method present (object (type vc:polynomial-values) stream view &key)
   (stream-add-math-output stream (math-output object stream)

@@ -6,6 +6,7 @@
   :serial t
   :components ((:file "packages")
                (:file "math-interactor")
+               (:file "math-presentations")
                (:file "math-output")
                (:file "basic-math-output")
                (:file "composed-math-output")

@@ -20,7 +20,7 @@
                                      (:file "elliptic-curves")
                              ))
                ;; (:file "experiments")
-               (:file "mathematica-export")
+               ;; (:file "mathematica-export")
                (:module "commands"
                         :series t
                         :depends-on ((:file "math-commands")

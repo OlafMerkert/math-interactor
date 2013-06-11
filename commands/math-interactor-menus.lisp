@@ -39,8 +39,8 @@
                             ("Integration formula"     :command com-integration-formula)
                             ("Check torsion condition" :command com-check-torsion)))
 
-(make-command-table 'output-cmds :errorp nil
-                    :menu '(("Mathematica" :command com-mathematica-export)))
+;; (make-command-table 'output-cmds :errorp nil
+;;                     :menu '(("Mathematica" :command com-mathematica-export)))
 
 (make-command-table 'menubar-cmds :errorp nil
                     :menu '(("Manage"              :menu manage-cmds)
@@ -48,5 +48,5 @@
                             ("Basic math"          :menu basic-math-ops)
                             ("Valuations"          :menu valuation-ops)
                             ("Continued fractions" :menu contfrac-ops)
-                            ("Export"              :menu output-cmds)
+                            ;; ("Export"              :menu output-cmds)
                             ("Quit"                :command com-quit)))

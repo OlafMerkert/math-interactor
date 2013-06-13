@@ -12,9 +12,26 @@
        (flet ((pr (x) (princ x stream))
               (fmt (&rest args) (apply #'format stream args))
               (rndr (x) (render x stream)))
-         ;; TODO apply scaling and colour 
-         ,@body
+         ;; apply scaling and colour
+         (with-drawing-options (stream :text-size (compute-size (mft:scaling ,format))
+                                       :ink (compute-colour (mft:colour ,format)))
+           ,@body)
          new-record))))
+
+(defparameter *default-math-text-size* 11)
+
+(defun compute-size (integer)
+  (cond ((or (null integer)
+             (not (integerp integer))
+             (zerop integer))
+         nil)
+        ((minusp integer) :smaller)
+        ((plusp integer) :larger)))
+
+(defun compute-colour (colour)
+  (if (colorp colour)
+      colour
+      +foreground-ink+))
 
 (defmacro def-render-methods (&body specs)
   `(progn
@@ -135,19 +152,47 @@
       (rndr (mft:body object-data))))
 
 (defun advance-cursor (math-output stream &key (line-break nil) (move-cursor t))
-    "Output the computed output-record `math-output' into `stream'. If
+  "Output the computed output-record `math-output' into `stream'. If
   `line-break' is t, move the stream-cursor to the beginning of the
   \"next line\". Otherwise, if `move-cursor' is t, move the
   stream-cursor to the end of the \"current line\". Otherwise, do not
   chnage the cursor position."
-    (setf (output-record-position math-output) (stream-cursor-position stream))
+  (multiple-value-bind (x y) (stream-cursor-position stream)
+    (setf (output-record-position math-output) (values 0 y))
     (cond (line-break
-         (multiple-value-bind (x y) (stream-cursor-position stream)
-           (declare (ignore x))
            (setf (stream-cursor-position stream)
-                 (values 0 (+ y (rectangle-height math-output))))))
-        (move-cursor
-         (multiple-value-bind (x y) (stream-cursor-position stream)
+                 (values 0 (+ y (rectangle-height math-output)))))
+          ;; TODO move-cursor is currently broken
+          (move-cursor
            (setf (stream-cursor-position stream)
                  (values (+ x (rectangle-width math-output) *math-horizontal-spacing*) y)))))
-    math-output)
+  math-output)
+
+(defun reset-cursor (stream)
+  "Move the cursor in `stream' to the beginning of the line."
+  (mvbind (x y) (stream-cursor-position stream)
+    (declare (ignorable x))
+    (setf (stream-cursor-position stream)
+          (values 0 y))))
+
+;;; automatic colouring
+(defmacro! signcase (o!number minus zero plus &optional (nonumber nil noerror-p))
+  `(cond ((and ,g!number (not (realp ,g!number)))
+          ,(if noerror-p nonumber `(error "Expected number in signcase, got ~A" ,g!number)))
+         ((or (not ,g!number) (zerop ,g!number)) ,zero)
+         ((plusp ,g!number) ,plus)
+         (t ,minus)))
+
+;; for integers
+(defmethod initialize-instance :after ((i mft:integer) &key)
+  (setf (mft:colour i)
+        (signcase (mft:n i) +red+ +black+ +blue+)))
+
+(defparameter variable-colours
+  (map-on-car #'mkstr
+              `((u . ,+green+))))
+
+(defmethod initialize-instance :after ((var mft:variable) &key)
+  (setf (mft:colour var)
+        (assoc1 (mkstr (mft:name var)) variable-colours nil :test 'string-equal)))
+

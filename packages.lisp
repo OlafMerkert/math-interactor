@@ -53,7 +53,8 @@
   (:use :clim :clim-lisp :ol :iterate)
   (:export
    #:render
-   #:advance-cursor))
+   #:advance-cursor
+   #:reset-cursor))
 
 (defpackage :generic-math-output-implementation
   (:nicknames :gmo)

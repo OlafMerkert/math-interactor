@@ -53,6 +53,7 @@ and continued fractions of power series."
 append it to the desired pane identified with `pane-id'."
   (let ((stream (get-frame-pane *application-frame* pane-id))
         (math-utils-format:*print-poly-pretty* t)
+        (math-utils-format:*enable-presentations* t)
         output-record)
     ;; explicitly call prepare, so e.g. integers get enriched with
     ;; presentations, but first test that this thing has not already
@@ -91,11 +92,11 @@ the app pane. See also `formula-with-math-objects'."
 ;;; commands for moving stuff between the app and the bin, and
 ;;; clearing those.
 (define-math-interactor-command (com-put-to-bin :name "Copy to bin")
-    ((object 'math-object-presentation))
+    ((object 'math-object))
   (put-result object t))
 
 (define-math-interactor-command (com-put-to-app :name "Copy to app")
-    ((object 'math-object-presentation))
+    ((object 'math-object))
   (put-result object))
 
 (define-math-interactor-command (com-clear-bin :name "Clear bin")
@@ -106,14 +107,6 @@ the app pane. See also `formula-with-math-objects'."
 (define-math-interactor-command (com-clear-app :name "Clear app")
     ()
   (window-clear (get-frame-pane *application-frame* 'app)))
-
-;; the commands require markup with the proper presentation
-(define-presentation-type math-object-presentation ()
-  :description "math object")
-
-(ew (defvar math-object-presentation-table (make-hash-table)))
-
-(defgeneric math-object-presentation (object))
 
 ;; input of polynomials
 (define-math-interactor-command (com-enter-polynomial :name t)

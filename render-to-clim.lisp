@@ -21,12 +21,7 @@
 (defparameter *default-math-text-size* 11)
 
 (defun compute-size (integer)
-  (cond ((or (null integer)
-             (not (integerp integer))
-             (zerop integer))
-         nil)
-        ((minusp integer) :smaller)
-        ((plusp integer) :larger)))
+  (signcase integer :smaller nil :larger))
 
 (defun compute-colour (colour)
   (if (colorp colour)
@@ -140,13 +135,18 @@
       (typep x 'gm:generic-math-object)))
 
 (defun math-presentation-type-of (x)
-  (unbox (type-of x)))
+  (cond ((integerp x) 'integer)
+        ((rationalp x) 'rational)
+        ((numberp x) 'number)
+        (t (unbox (type-of x)))))
 
 (def-render-method (object-data :center t)
   (if (presentable (mft:object object-data))
       (with-output-as-presentation (stream
                                     (mft:object object-data)
-                                    (math-presentation-type-of (mft:object object-data)))
+                                    (math-presentation-type-of (mft:object object-data))
+                                    ;; :single-box t
+                                    :allow-sensitive-inferiors t)
         (setf (center-offset new-record)
               (center-offset (rndr (mft:body object-data)))))
       (rndr (mft:body object-data))))

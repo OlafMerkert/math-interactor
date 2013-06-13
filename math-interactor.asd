@@ -5,7 +5,6 @@
                         math-formatter)
   :serial t
   :components ((:file "packages")
-               (:file "math-presentations")
                (:file "alignment")
                (:file "render-to-clim")
                (:file "math-interactor")

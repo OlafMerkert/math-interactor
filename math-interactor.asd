@@ -7,11 +7,11 @@
   :components ((:file "packages")
                (:file "alignment")
                (:file "render-to-clim")
+               (:file "math-presentations")
                (:file "math-interactor")
                (:module "mu-output"
                         :serial t
-                        :components ((:file "simple")
-                                     (:file "formulas")
+                        :components ((:file "formulas")
                                      ))
                ;; (:file "experiments")
                ;; (:file "mathematica-export")

@@ -27,3 +27,28 @@
 (define-presentation-type cf-ps:quadratic-continued-fraction () :inherit-from 'cf-ps:continued-fraction)
 (define-presentation-type cf-ps:sqrt-continued-fraction () :inherit-from 'cf-ps:continued-fraction)
 #|(define-presentation-type cf-ps:alternative-continued-fraction () :inherit-from 'cf-ps:continued-fraction)|#
+
+
+;;; passing complicated objects through the interactive dialog
+(defvar math-object-store (make-hash-table :test 'equal))
+
+(defun get-string-representation (math-object)
+  (subseq
+   (with-output-to-string (stream)
+     (print-unreadable-object (math-object stream :type t :identity t)))
+   1)) ; discard the #
+
+(defun from-store (string-repr)
+  (gethash string-repr math-object-store))
+
+(defun to-store (math-object)
+  (let ((repr (get-string-representation math-object)))
+    (gethash/c repr math-object-store math-object)
+    repr))
+
+(define-presentation-method present (object (type math-object) stream (view textual-dialog-view) &key)
+  (princ (to-store object) stream))
+
+(define-presentation-method accept ((type math-object) stream (view textual-dialog-view) &key)
+  (from-store (read-line stream)))
+;; TODO make sure this works for cf as well

@@ -145,7 +145,7 @@
       (with-output-as-presentation (stream
                                     (mft:object object-data)
                                     (math-presentation-type-of (mft:object object-data))
-                                    ;; :single-box t
+                                    :single-box :highlighting
                                     :allow-sensitive-inferiors t)
         (setf (center-offset new-record)
               (center-offset (rndr (mft:body object-data)))))

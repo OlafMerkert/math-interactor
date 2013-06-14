@@ -53,11 +53,8 @@ and continued fractions of power series."
 append it to the desired pane identified with `pane-id'."
   (let ((stream (get-frame-pane *application-frame* pane-id))
         (math-utils-format:*print-poly-pretty* t)
-        (math-utils-format:*enable-presentations* t)
+        (math-utils-format:*enable-presentations* nil) ; TODO reenable presentations
         output-record)
-    ;; explicitly call prepare, so e.g. integers get enriched with
-    ;; presentations, but first test that this thing has not already
-    ;; been prepared.
     ;; TODO what about primitive stuff? should we worry about it?
     (with-output-recording-options (stream :draw nil)
       (setf output-record (rtc:render (if (mft:formatted-p math-object) math-object

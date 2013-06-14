@@ -10,6 +10,10 @@
   (:documentation "Keep track of explicit center coordinates of the
   output-record. This is important for compound objects."))
 
+(defclass math-output-presentation (clim-internals::presentation-mixin
+                                    math-output-record/with-center)
+  ())
+
 ;; which are mainly used for keeping track of centers for alignment
 (defgeneric center-offset (math-output-record)
   (:documentation "As two values return the center coordinates of the
@@ -36,8 +40,6 @@
           center-y y)))
 
 ;;; and provide some alignments functions
-
-
 (defun insert-operators (arguments operators)
   "Given '(a b c) and '(+ -), create the output '(a + b - c)."
   (list* (first arguments)

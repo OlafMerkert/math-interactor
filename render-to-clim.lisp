@@ -36,7 +36,7 @@
 ;; placeholders
 (def-render-methods
   (ellipsis) (pr "...")
-  (infinity) (pr "∞"))
+  (infinity) (pr "oo"))
 
 ;; primitives
 (def-render-methods
@@ -132,7 +132,8 @@
 
 (defun presentable (x)
   (or (typep x 'number)
-      (typep x 'gm:generic-math-object)))
+      (typep x 'gm:generic-math-object)
+      (typep x 'cf-ps:continued-fraction)))
 
 (defun math-presentation-type-of (x)
   (cond ((integerp x) 'integer)
@@ -140,16 +141,17 @@
         ((numberp x) 'number)
         (t (unbox (type-of x)))))
 
-(def-render-method (object-data :center t)
+(defmethod render ((object-data mft:object-data) stream)
   (if (presentable (mft:object object-data))
-      (with-output-as-presentation (stream
-                                    (mft:object object-data)
-                                    (math-presentation-type-of (mft:object object-data))
-                                    :single-box :highlighting
-                                    :allow-sensitive-inferiors t)
-        (setf (center-offset new-record)
-              (center-offset (rndr (mft:body object-data)))))
-      (rndr (mft:body object-data))))
+      (with-new-output-record (stream 'math-output-presentation new-record
+                                      :object (mft:object object-data)
+                                      :type (expand-presentation-type-abbreviation 
+                                             (math-presentation-type-of (mft:object object-data)))
+                                      :single-box :highlighting)
+        (let ((clim-internals::*allow-sensitive-inferiors* t))
+          (setf (center-offset new-record)
+                (center-offset (render (mft:body object-data) stream)))))
+      (render (mft:body object-data) stream)))
 
 (defun advance-cursor (math-output stream &key (line-break nil) (move-cursor t))
   "Output the computed output-record `math-output' into `stream'. If
@@ -176,12 +178,7 @@
           (values 0 y))))
 
 ;;; automatic colouring
-(defmacro! signcase (o!number minus zero plus &optional (nonumber nil noerror-p))
-  `(cond ((and ,g!number (not (realp ,g!number)))
-          ,(if noerror-p nonumber `(error "Expected number in signcase, got ~A" ,g!number)))
-         ((or (not ,g!number) (zerop ,g!number)) ,zero)
-         ((plusp ,g!number) ,plus)
-         (t ,minus)))
+
 
 ;; for integers
 (defmethod initialize-instance :after ((i mft:integer) &key)

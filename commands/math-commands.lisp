@@ -41,16 +41,6 @@
   (assert (nt:prime-p p))
   (put-result (gm:-> 'finite-fields:integer-mod math-object :mod p)))
 
-(define-math-interactor-command (com-order-p :name "order of p")
-    ((math-object 'math-object) (p 'integer :default 3 :prompt "prime"))
-  (assert (nt:prime-p p))
-  (multiple-value-bind (bound comment)
-      (vv:valuate-exp p math-object)
-    (put-result/formula (bound)
-     `(= (_ ord ,p) ,bound))
-    (when (eq comment :unbounded)
-      (format (get-frame-pane *application-frame* 'app) " unbounded~%"))))
-
 (define-math-interactor-command (com-valuate-coeff :name "Valuate coefficientwise")
     ((math-object 'math-object)
      (valuation 'integer :prompt "valuation (prime number)"))

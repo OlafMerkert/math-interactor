@@ -52,13 +52,13 @@ and continued fractions of power series."
   "Given a `math-object', produce a CLIM rendering of it and just
 append it to the desired pane identified with `pane-id'."
   (let ((stream (get-frame-pane *application-frame* pane-id))
-        (math-utils-format:*print-poly-pretty* t)
-        (math-utils-format:*enable-presentations* nil) ; TODO reenable presentations
         output-record)
     ;; TODO what about primitive stuff? should we worry about it?
     (with-output-recording-options (stream :draw nil)
       (setf output-record (rtc:render (if (mft:formatted-p math-object) math-object
-                                          (math-utils-format:format math-object))
+                                          (math-utils-format:format-pretty
+                                           math-object
+                                           :presentations t))
                                       stream))
       (rtc:advance-cursor output-record stream :line-break t))
     (stream-replay stream)))
@@ -89,11 +89,11 @@ the app pane. See also `formula-with-math-objects'."
 ;;; commands for moving stuff between the app and the bin, and
 ;;; clearing those.
 (define-math-interactor-command (com-put-to-bin :name "Copy to bin")
-    ((object 'math-object))
+    ((object 'interactive-object))
   (put-result object t))
 
 (define-math-interactor-command (com-put-to-app :name "Copy to app")
-    ((object 'math-object))
+    ((object 'interactive-object))
   (put-result object))
 
 (define-math-interactor-command (com-clear-bin :name "Clear bin")

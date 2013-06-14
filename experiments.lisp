@@ -7,6 +7,10 @@
   (let ((stream (get-frame-pane *application-frame* 'app)))
     (format stream "~&Hallo~%")))
 
+(define-math-interactor-command (com-present-test :name "Select test")
+    ((object 'gm:generic-math-object))
+  (format t "Hallo"))
+
 (defmacro! define-example (name math-object-spec)
   `(define-math-interactor-command (,(symb 'com- (string-upcase name)) :menu t :name ,name)
        ()

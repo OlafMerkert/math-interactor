@@ -2,7 +2,8 @@
 
 (defpackage :math-interactor
   (:nicknames :mi)
-  (:use :clim-lisp :clim :ol :iterate)
+  (:use :clim-lisp :clim :ol :iterate
+        :formulas)
   (:shadow :numerator :denominator :princ-to-stream)
   (:export
    #:finite-sum
@@ -46,7 +47,10 @@
    #:center
    #:coordinates
    #:finite-tuple
-   #:tuple))
+   #:tuple
+   #:interactive-object
+   #:math-object
+   #:poly/series))
 
 (defpackage :render-to-clim
   (:nicknames :rtc)
@@ -54,7 +58,8 @@
   (:export
    #:render
    #:advance-cursor
-   #:reset-cursor))
+   #:reset-cursor
+   ))
 
 (defpackage :generic-math-output-implementation
   (:nicknames :gmo)

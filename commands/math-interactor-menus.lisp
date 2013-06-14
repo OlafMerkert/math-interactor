@@ -23,7 +23,6 @@
 
 (make-command-table 'valuation-ops :errorp nil
                     :menu '(("Reduce mod p" :command com-reduce-modp)
-                            ("order of p" :command com-order-p)
                             ("Valuate" :command com-valuate)
                             ("Valuate coefficientwise" :command com-valuate-coeff)))
 

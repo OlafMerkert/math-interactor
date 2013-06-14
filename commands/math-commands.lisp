@@ -44,19 +44,23 @@
 (define-math-interactor-command (com-valuate-coeff :name "Valuate coefficientwise")
     ((math-object 'math-object)
      (valuation 'integer :prompt "valuation (prime number)"))
-  (put-result (vc:valuate-exp valuation math-object)))
+  (put-result/formula ((o (vc:valuate-exp valuation math-object))
+                       (v valuation))
+                      `(= (_ ord ,v) ,o)))
 
 (define-math-interactor-command (com-valuate :name "Valuate")
     ((math-object 'math-object)
      (valuation 'integer :prompt "valuation (prime number)"))
-  (put-result (vv:valuate-exp valuation math-object)))
+  (put-result/formula ((o (vv:valuate-exp valuation math-object))
+                       (v valuation))
+                      `(= (_ ord ,v) ,o)))
 
 ;;; polynomials and power series
 (def-gm-method% degree polynomials:degree
   1 poly/series)
 
 (def-gm-method% leading-coefficient polynomials:leading-coefficient
-  1  poly/series)
+  1 poly/series)
 
 (def-gm-method% truncate power-series:series-truncate 1 power-series:power-series)
 (def-gm-method% remainder power-series:series-remainder 1 power-series:power-series)

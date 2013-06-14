@@ -54,12 +54,13 @@
   (multiple-value-bind (period-length sn)
       (cf-ps:find-pure-quasiperiod-length cf :length-bound bound)
     (cond ((not period-length)
-           (put-result/formula () `(> quasi-period-length ,(as-int bound))))
+           (put-result/formula (bound) `(> quasi-period-length ,bound)))
           ((gm:one-p sn)
-           (put-result/formula () `(= period-length ,(as-int period-length))))
+           (put-result/formula (period-length) `(= period-length ,period-length)))
           (t
-           (put-result/formula () `(= quasi-period-length ,(as-int period-length)))
-           (put-result/formula () `(= period-length ,(as-int (* 2 period-length))))))))
+           (put-result/formula (period-length) `(= quasi-period-length ,period-length))
+           (put-result/formula ((pl2 (* 2 period-length)))
+                               `(= period-length ,pl2))))))
 
 ;;; partial and complete quotients
 (define-math-interactor-command (com-list-partial-quotients :name "Partial quotients")

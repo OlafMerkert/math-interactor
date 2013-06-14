@@ -9,10 +9,6 @@
                (:file "render-to-clim")
                (:file "math-presentations")
                (:file "math-interactor")
-               (:module "mu-output"
-                        :serial t
-                        :components ((:file "formulas")
-                                     ))
                ;; (:file "experiments")
                ;; (:file "mathematica-export")
                (:module "commands"

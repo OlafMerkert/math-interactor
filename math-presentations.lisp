@@ -36,13 +36,16 @@
 
 
 ;;; passing complicated objects through the interactive dialog
+
+;;;  we actually need this, even when presentation-types correspond
+;;; directly to classes.
+
 (defvar math-object-store (make-hash-table :test 'equal))
 
 (defun get-string-representation (math-object)
-  (subseq
-   (with-output-to-string (stream)
-     (print-unreadable-object (math-object stream :type t :identity t)))
-   1)) ; discard the #
+  (with-output-to-string (stream)
+    (print-unreadable-object (math-object stream :type t :identity t)
+      (princ math-object stream))))
 
 (defun from-store (string-repr)
   (gethash string-repr math-object-store))

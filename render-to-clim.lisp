@@ -130,6 +130,11 @@
                                 #'stacking-align
                                 #'centering-align))))
 
+(def-render-method (grid2 :center t)
+  (let ((elements (map-array1 #'rndr (mft:elements grid2))))
+    (setf (center-offset new-record)
+          (align-grid-output-records elements))))
+
 (defun presentable (x)
   (or (typep x 'number)
       (typep x 'gm:generic-math-object)

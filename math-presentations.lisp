@@ -11,6 +11,8 @@
 (define-presentation-type ec-ws:point-2 () :inherit-from 'gm:generic-math-object)
 (define-presentation-type ec-ws:ec-point-ws () :inherit-from 'ec-ws:point-2)
 (define-presentation-type ec-ws:ec-point-infinity () :inherit-from 'gm:generic-math-object)
+(define-presentation-type linear-algebra/vectors:vector () :inherit-from 'gm:generic-math-object)
+(define-presentation-type linear-algebra/vectors:matrix ()  :inherit-from 'linear-algebra/vectors:vector)
 
 ;;; combined types
 (define-presentation-type-abbreviation math-object ()

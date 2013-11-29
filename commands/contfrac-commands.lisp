@@ -94,8 +94,8 @@
     (let ((p (sref cf-ps:pn index))
           (q (sref cf-ps:qn index)))
       ;; typeset equation with symbols on the left.
-      (put-result/formula (p) `(= p ,p))
-      (put-result/formula (q) `(= q ,q)))))
+      (put-result/formula (p) `(= (_ p ,index) ,p))
+      (put-result/formula (q) `(= (_ q ,index) ,q)))))
 
 (define-math-interactor-command (com-continuants-sqrt :name "Continuants + Pell")
     ((cf 'cf-ps:continued-fraction) (index 'integer :prompt "n+1"))
@@ -104,8 +104,8 @@
     (let ((p (sref cf-ps:pn index))
           (q (sref cf-ps:qn index)))
       ;; typeset equation with symbols on the left.
-      (put-result/formula (p) `(= p ,p))
-      (put-result/formula (q) `(= q ,q))
+      (put-result/formula (p) `(= (_ p ,index) ,p))
+      (put-result/formula (q) `(= (_ q ,index) ,q))
       (put-result/formula ((pell (gm:- (gm:expt p 2) (gm:* cf-ps:d q q))))
                           `(= (- (^ p 2) (* D (^ q 2))) ,pell)))))
 

@@ -15,6 +15,7 @@
          ;; apply scaling and colour
          (with-drawing-options (stream :text-size (compute-size (mft:scaling ,format))
                                        :ink (compute-colour (mft:colour ,format)))
+           (setf (stream-end-of-line-action stream) :scroll)
            ,@body)
          new-record))))
 

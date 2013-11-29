@@ -60,20 +60,3 @@
    #:advance-cursor
    #:reset-cursor
    ))
-
-(defpackage :generic-math-output-implementation
-  (:nicknames :gmo)
-  (:shadowing-import-from :math-interactor :numerator :denominator)
-  (:shadow :finish)
-  (:use :clim-lisp :clim :ol :iterate
-        :infinite-math
-        :math-interactor
-        :polynomials
-        :power-series)
-  (:export
-   #:math-output-prepare
-   #:*integer-output-mode*
-   #:formula-with-math-objects
-   #:_
-   #:^
-   #:formula-prepare))

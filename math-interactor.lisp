@@ -124,21 +124,18 @@ the app pane. See also `formula-with-math-objects'."
           additional-terms))
 
 ;;; todo do factorisation only over a specified set of places
-#|(define-math-interactor-command (com-toggle-integer-display :name "Select integer display.")
-    ((integer 'integer :default 0 :prompt "0 for no factorisation, -1 for complete factorisation or any single factor."))
-  (format (get-frame-pane *application-frame* 'int)
-          (cond ((zerop integer)
-                 (setf gmo:*integer-output-mode* nil)
-                 "~&No factorisation.~%")
-                ((minusp integer)
-                 (setf gmo:*integer-output-mode* t)
-                 "~&Complete factorisation.~%")
-                (t
-                 (setf gmo:*integer-output-mode* integer)
-                 (mkstr "~&Factor out just "
-                        integer
-                        ".~%")))))|#
 
+(defmacros! def-int-disp-com (key &optional argument)
+  `(define-math-interactor-command (,(symb 'com-integer-display- key))
+       ,(if argument `((,argument ',argument)))
+     (setf math-utils-format:*integer-display* ,(or argument key))))
+
+(def-int-disp-com
+    :standard
+    :factorise
+  (:factorise-over-s integer)
+  :abbrev
+  :abbrev+)
 
 ;; TODO allow exporting the app view of the math-interactor to TeX or something.
 

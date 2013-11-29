@@ -46,7 +46,18 @@
                             ("Check torsion condition" :command com-check-torsion)))
 
 ;; (make-command-table 'output-cmds :errorp nil
-;;                     :menu '(("Mathematica" :command com-mathematica-export)))
+;;                     :menu '(("Mathematica" :command
+;;                     com-mathematica-export)))
+
+(make-command-table 'integer-display-settings :errorp nil
+                    :menu '(("Standard"                    :command com-integer-display-standard)
+                            ("Factorise"                   :command com-integer-display-factorise)
+                            ("Factorise below bound"       :command com-integer-display-factorise-over-s)
+                            ("Abbreviate"                  :command com-integer-display-abbrev)
+                            ("Abbreviate, but show length" :command com-integer-display-abbrev+)))
+
+(make-command-table 'settings :errorp nil
+                    :menu '(("Integer display" :menu integer-display-settings)))
 
 (make-command-table 'menubar-cmds :errorp nil
                     :menu '(("Manage"              :menu manage-cmds)
@@ -55,5 +66,6 @@
                             ("Valuations"          :menu valuation-ops)
                             ("Polynomials"         :menu polynomial-ops)
                             ("Continued fractions" :menu contfrac-ops)
+                            ("Settings"            :menu settings)
                             ;; ("Export"              :menu output-cmds)
                             ("Quit"                :command com-quit)))

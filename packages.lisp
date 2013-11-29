@@ -4,7 +4,7 @@
   (:nicknames :mi)
   (:use :clim-lisp :clim :ol :iterate
         :formulas)
-  (:shadow :numerator :denominator :princ-to-stream)
+  (:import-from :infinite-sequence #:sref)
   (:export
    #:finite-sum
    #:fraction

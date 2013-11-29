@@ -67,23 +67,23 @@
     ((cf 'cf-ps:continued-fraction) (start 'integer :default 0 :prompt "start") (end 'integer :prompt "end"))
   (cf-ps:with-cf cf
     (iter (for index from start to end)
-          (put-result/formula ((an (lazy-aref cf-ps:an index)))
+          (put-result/formula ((an (sref cf-ps:an index)))
                               `(= (_ a ,index) ,an)))))
 
 (define-math-interactor-command (com-list-complete-quotients :name "Complete quotients")
     ((cf 'cf-ps:continued-fraction) (start 'integer :default 0 :prompt "start") (end 'integer :prompt "end"))
   (cf-ps:with-cf cf
     (iter (for index from start to end)
-          (put-result/formula ((alphan (lazy-aref cf-ps:alphan index)))
+          (put-result/formula ((alphan (sref cf-ps:alphan index)))
                               `(= (_ alpha ,index) ,alphan)))))
 
 (define-math-interactor-command (com-list-complete-quotients-sqrt :name "Complete quotients SQRT")
     ((cf 'cf-ps:continued-fraction) (start 'integer :default 0 :prompt "start") (end 'integer :prompt "end"))
   (cf-ps:with-cf2 cf
     (iter (for index from start to end)
-          (put-result/formula ((rn (lazy-aref cf-ps:rn index)))
+          (put-result/formula ((rn (sref cf-ps:rn index)))
                               `(= (_ r ,index) ,rn))
-          (put-result/formula ((sn (lazy-aref cf-ps:sn index)))
+          (put-result/formula ((sn (sref cf-ps:sn index)))
                               `(= (_ s ,index) ,sn)))))
 
 ;;; compute continuants and things
@@ -91,8 +91,8 @@
     ((cf 'cf-ps:continued-fraction) (index 'integer :prompt "n+1"))
   (cf-ps:with-cf2 cf
     (decf index)
-    (let ((p (lazy-aref cf-ps:pn index))
-          (q (lazy-aref cf-ps:qn index)))
+    (let ((p (sref cf-ps:pn index))
+          (q (sref cf-ps:qn index)))
       ;; typeset equation with symbols on the left.
       (put-result/formula (p) `(= p ,p))
       (put-result/formula (q) `(= q ,q))
@@ -103,8 +103,8 @@
 (define-math-interactor-command (com-integration-formula :name "Integration formula")
     ((cf 'cf-ps:continued-fraction) (index 'integer :prompt "n"))
   (cf-ps:with-cf2 cf
-    (let ((p (lazy-aref cf-ps:pn index))
-          (q (lazy-aref cf-ps:qn index)))
+    (let ((p (sref cf-ps:pn index))
+          (q (sref cf-ps:qn index)))
       (put-result/formula ((f (if (gm:zero-p q) 0
                                   (gm:/ (derivative p) q))))
                           `(= f ,f)))))

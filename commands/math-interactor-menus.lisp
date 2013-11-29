@@ -41,6 +41,7 @@
                             ("Complete quotients"      :command com-list-complete-quotients)
                             ("Complete quotients SQRT" :command com-list-complete-quotients-sqrt)
                             ("Continuants"             :command com-continuants)
+                            ("Continuants + Pell"      :command com-continuants-sqrt)
                             ("Integration formula"     :command com-integration-formula)
                             ("Check torsion condition" :command com-check-torsion)))
 

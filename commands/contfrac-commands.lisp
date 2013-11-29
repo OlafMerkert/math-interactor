@@ -89,6 +89,16 @@
 ;;; compute continuants and things
 (define-math-interactor-command (com-continuants :name "Continuants")
     ((cf 'cf-ps:continued-fraction) (index 'integer :prompt "n+1"))
+  (cf-ps:with-cf cf
+    (decf index)
+    (let ((p (sref cf-ps:pn index))
+          (q (sref cf-ps:qn index)))
+      ;; typeset equation with symbols on the left.
+      (put-result/formula (p) `(= p ,p))
+      (put-result/formula (q) `(= q ,q)))))
+
+(define-math-interactor-command (com-continuants-sqrt :name "Continuants + Pell")
+    ((cf 'cf-ps:continued-fraction) (index 'integer :prompt "n+1"))
   (cf-ps:with-cf2 cf
     (decf index)
     (let ((p (sref cf-ps:pn index))
@@ -106,7 +116,7 @@
     (let ((p (sref cf-ps:pn index))
           (q (sref cf-ps:qn index)))
       (put-result/formula ((f (if (gm:zero-p q) 0
-                                  (gm:/ (derivative p) q))))
+                                  (gm:/ (polynomials:derivative p) q))))
                           `(= f ,f)))))
 
 

@@ -61,7 +61,10 @@ append it to the desired pane identified with `pane-id'."
                                            :presentations t))
                                       stream))
       (rtc:advance-cursor output-record stream :line-break t))
-    (stream-replay stream)))
+    #|(stream-replay stream)|#
+    ;; refresh entire window to also recompute bounding borders
+    ;; (otherwise, we might get clipping if scrolling is on)
+    (window-refresh stream)))
 
 (defun put-result (math-object &optional to-bin)
   "Given an `math-object', produce a rendering and by default display

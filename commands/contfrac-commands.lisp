@@ -16,7 +16,7 @@
     (put-result/formula ((sqrt (cf-ps:starting cf)))
                         `(= (sqrt D) ,sqrt))
     (put-result/formula (cf)
-                        `(= (cf D) ,cf))))
+                        `(= (cf (sqrt D)) ,cf))))
 
 (define-math-interactor-command (com-create-cf-quadratic :name "CF expansion quadratic")
     ((poly 'polynomials:polynomial :prompt "d")

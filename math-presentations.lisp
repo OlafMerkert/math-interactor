@@ -47,7 +47,8 @@
 (defun get-string-representation (math-object)
   (with-output-to-string (stream)
     (print-unreadable-object (math-object stream :type t :identity t)
-      (princ math-object stream))))
+      (when (typep math-object 'gm:generic-math-object)
+        (princ math-object stream)))))
 
 (defun from-store (string-repr)
   (gethash string-repr math-object-store))
@@ -57,10 +58,17 @@
     (gethash/c repr math-object-store math-object)
     repr))
 
+(defun read-number (string)
+  (let ((number (read-from-string string)))
+    (if (numberp number)
+        number)))
+
 (bind-multi ((object-type gm:generic-math-object cf-ps:continued-fraction))
   (define-presentation-method present (object (type object-type) stream (view textual-dialog-view) &key)
     (princ (to-store object) stream))
 
   (define-presentation-method accept ((type object-type) stream (view textual-dialog-view) &key)
-    (from-store (read-line stream))))
+    (let ((input (read-line stream)))
+      (or (from-store input)
+          (read-number input)))))
 

@@ -126,8 +126,6 @@ the app pane. See also `formula-with-math-objects'."
           "~&Show ~A negative coefficients of laurent series.~%"
           additional-terms))
 
-;;; todo do factorisation only over a specified set of places
-
 (defmacros! def-int-disp-com (key &optional argument)
   `(define-math-interactor-command (,(symb 'com-integer-display- key))
        ,(if argument `((,argument ',argument)))

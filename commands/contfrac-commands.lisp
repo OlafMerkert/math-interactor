@@ -134,3 +134,14 @@
     (put-result/formula ((order (if order order :infinity+)))
                         `(= (ord (- (_ O 1) (_ O 2)))
                             ,order))))
+
+;; analyse orders of points at infinity in the relevant divisor
+(define-math-interactor-command (com-phin-inf-order :name "Relevant divisor at infinity")
+    ((object 'cf-ps:continued-fraction) (index 'integer :prompt "n"))
+  (dbind (o+ o-) (cf-ps:phin-infinite-order object index)
+    (put-result/formula (o+ o- (zeroes (- (+ o+ o-))))
+                        `(nil (= (ord (_ O 1) (_ phi ,index)) ,o+)
+                              "  "
+                              (= (ord (_ O 2) (_ phi ,index)) ,o-)
+                              "  "
+                              (nil ,zeroes " more zeroes")))))

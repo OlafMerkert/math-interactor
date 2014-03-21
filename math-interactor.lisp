@@ -47,19 +47,33 @@ and continued fractions of power series."
   "keep track of stored stuff in the bin, so complicated expressions
   don't have to be entered over and over again.")
 
+(defvar *formatted-content*
+  (list (list 'app)
+        (list 'bin)))
+
+(defun clear-formatted (pane-id)
+  (setf (cdr (assoc pane-id *formatted-content*)) nil))
+
+(defun get-formatted (pane-id)
+  (reverse (assoc1 pane-id *formatted-content*)))
+
+(defun put-formatted (obj pane-id)
+  (let ((fc (assoc pane-id *formatted-content*)))
+    (push obj (cdr fc))))
+
 ;;; math output helper functions
 (defun put-result% (math-object pane-id)
   "Given a `math-object', produce a CLIM rendering of it and just
 append it to the desired pane identified with `pane-id'."
   (let ((stream (get-frame-pane *application-frame* pane-id))
+        (formatted-object (if (mft:formatted-p math-object) math-object
+                              (math-utils-format:format-pretty
+                               math-object :presentations t)))
         output-record)
     ;; TODO what about primitive stuff? should we worry about it?
+    (put-formatted formatted-object pane-id)
     (with-output-recording-options (stream :draw nil)
-      (setf output-record (rtc:render (if (mft:formatted-p math-object) math-object
-                                          (math-utils-format:format-pretty
-                                           math-object
-                                           :presentations t))
-                                      stream))
+      (setf output-record (rtc:render formatted-object stream))
       (rtc:advance-cursor output-record stream :line-break t))
     #|(stream-replay stream)|#
     ;; refresh entire window to also recompute bounding borders
@@ -102,10 +116,12 @@ the app pane. See also `formula-with-math-objects'."
 (define-math-interactor-command (com-clear-bin :name "Clear bin")
     ()
   (setf *bin* nil)
+  (clear-formatted 'bin)
   (window-clear (get-frame-pane *application-frame* 'bin)))
 
 (define-math-interactor-command (com-clear-app :name "Clear app")
     ()
+  (clear-formatted 'app)
   (window-clear (get-frame-pane *application-frame* 'app)))
 
 ;; input of polynomials

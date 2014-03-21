@@ -9,6 +9,7 @@
                (:file "render-to-clim")
                (:file "math-presentations")
                (:file "math-interactor")
+               (:file "export")
                ;; (:file "experiments")
                ;; (:file "mathematica-export")
                (:module "commands"

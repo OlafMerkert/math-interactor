@@ -86,6 +86,14 @@
           (put-result/formula ((sn (sref cf-ps:sn index)))
                               `(= (_ s ,index) ,sn)))))
 
+
+(define-math-interactor-command (com-list-quotients-leading-coefficients :name "Leading coefficients")
+    ((cf 'cf-ps:continued-fraction) (start 'integer :default 0 :prompt "start") (end 'integer :prompt "end"))
+  (cf-ps:with-cf cf
+    (iter (for index from start to end)
+          (put-result/formula ((anlk (polynomials:leading-coefficient (sref cf-ps:an index))))
+                              `(= (lk (_ a ,index)) ,anlk)))))
+
 ;;; compute continuants and things
 (define-math-interactor-command (com-continuants :name "Continuants")
     ((cf 'cf-ps:continued-fraction) (index 'integer :prompt "n+1"))

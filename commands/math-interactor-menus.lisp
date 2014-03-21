@@ -40,6 +40,7 @@
                             ("Partial quotients"       :command com-list-partial-quotients)
                             ("Complete quotients"      :command com-list-complete-quotients)
                             ("Complete quotients SQRT" :command com-list-complete-quotients-sqrt)
+                            ("Leading coefficients"    :command com-list-quotients-leading-coefficients)
                             ("Continuants"             :command com-continuants)
                             ("Continuants + Pell"      :command com-continuants-sqrt)
                             ("Integration formula"     :command com-integration-formula)

@@ -33,6 +33,10 @@
   `(progn
      ,@(mapcar #`(def-render-method ,@a1) (group specs 2))))
 
+(defmethod render ((obj (eql nil)) stream)
+  (with-new-output-record (stream 'math-output-record new-record)
+    (warn "Rendering NIL")
+    new-record))
 
 ;; placeholders
 (def-render-methods

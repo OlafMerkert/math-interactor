@@ -6,7 +6,8 @@
   (let ((cf (make-instance 'cf-ps:continued-fraction
                            :starting series)))
     (put-result/formula (series) `(= alpha ,series))
-    (put-result/formula (cf) `(= (cf alpha) ,cf))))
+    (put-result/formula (cf) `(= (cf alpha) ,cf))
+    cf))
 
 (define-math-interactor-command (com-create-cf-sqrt :name "CF expansion SQRT")
     ((poly 'polynomials:polynomial))
@@ -16,7 +17,8 @@
     (put-result/formula ((sqrt (cf-ps:starting cf)))
                         `(= (sqrt D) ,sqrt))
     (put-result/formula (cf)
-                        `(= (cf (sqrt D)) ,cf))))
+                        `(= (cf (sqrt D)) ,cf))
+    cf))
 
 (define-math-interactor-command (com-create-cf-quadratic :name "CF expansion quadratic")
     ((poly 'polynomials:polynomial :prompt "d")
@@ -34,7 +36,8 @@
                                ,c)
                             ,alpha0))
     (put-result/formula (cf)
-                        `(= (cf alpha) ,cf))))
+                        `(= (cf alpha) ,cf))
+    cf))
 
 ;; and finally a weird version of continued fractions
 (define-math-interactor-command (com-create-alternative-cf :name "Alternative CF expansion")
@@ -44,7 +47,8 @@
                             :starting radicand)))
     (put-result/formula (poly) `(= D ,poly))
     (put-result/formula (radicand) `(= (sqrt D) ,radicand))
-    (put-result/formula (cf) `(= (cf D) ,cf))))
+    (put-result/formula (cf) `(= (cf D) ,cf))
+    cf))
 
 ;;; now the operations we do on CFs
 
@@ -87,12 +91,60 @@
                               `(= (_ s ,index) ,sn)))))
 
 
-(define-math-interactor-command (com-list-quotients-leading-coefficients :name "Leading coefficients")
+(define-math-interactor-command (com-list-quotients-leading-coefficients :name "Leading coefficients CF")
     ((cf 'cf-ps:continued-fraction) (start 'integer :default 0 :prompt "start") (end 'integer :prompt "end"))
   (cf-ps:with-cf cf
     (iter (for index from start to end)
           (put-result/formula ((anlk (polynomials:leading-coefficient (sref cf-ps:an index))))
                               `(= (lk (_ a ,index)) ,anlk)))))
+
+(defpar discriminate-bound (expt 10 6))
+
+(defun discriminate-zeroes-poles (rational)
+  (let ((n (abs (cl:numerator rational)))
+        (d (cl:denominator rational)))
+    (mapcar
+     (lambda (x) (format nil "~:[+~;-~]~A" (minusp (cdr x)) (car x)))
+     (merge 'list (nt-f:factorise n :singletons discriminate-bound)
+            (mapcar (lambda (x) (cons (car x) (- (cdr x))))
+                    (nt-f:factorise d :singletons discriminate-bound))
+            #'< :key #'car))))
+
+(defun smooth-divisor (math-object primes)
+  (map 'list (lambda (p) (cons p (vv:valuate-exp p math-object))) primes))
+
+(define-math-interactor-command (com-list-quotients-factors :name "Reduction factors")
+    ((cf 'cf-ps:continued-fraction) (start 'integer :default 0 :prompt "start") (end 'integer :prompt "end"))
+  #d
+  (cf-ps:with-cf cf
+    (iter (for index from start to end)
+          (for disc next (discriminate-zeroes-poles
+                          (polynomials:leading-coefficient (sref cf-ps:an index))))
+          (for tuple next (mft:tuple (mapcar #'mft:number disc)))
+          (put-result/formula ()
+                              `(= (div (lk (_ a ,index))) ,tuple)))))
+
+(define-math-interactor-command (com-list-complete-quotient-divisor :name "Divisor of complete quotients")
+    ((cf 'cf-ps:continued-fraction) (start 'integer :default 0 :prompt "start") (end 'integer :prompt "end")
+     (bound 'integer :default discriminate-bound :prompt "Prime bound"))
+  #d
+  (cf-ps:with-cf cf
+    (let ((primes (nt-p:erastothenes-sieve bound)))
+      (iter (for index from start to end)
+            (for disc next (smooth-divisor (sref cf-ps:alphan index) primes))
+            (for tuple next (mft:tuple
+                             (filter (lambda (princ-div)
+                                       (signcase
+                                        (cdr princ-div)
+                                        (mft:number (format nil "+~A" (car princ-div)))
+                                        nil
+                                        (mft:number (format nil "-~A" (car princ-div)))
+                                        (mft:number (format nil "?~A" (car princ-div)))))
+                                     disc)))
+            (put-result/formula ()
+                                `(= (div (_ alpha ,index)) ,tuple))))))
+
+
 
 ;;; compute continuants and things
 (define-math-interactor-command (com-continuants :name "Continuants")
@@ -153,3 +205,16 @@
                               (= (ord (_ O 2) (_ phi ,index)) ,o-)
                               "  "
                               (nil ,zeroes " more zeroes")))))
+
+(define-math-interactor-command (com-reduction-primes-quasi-period :name "Prime reduction period lengths")
+    ((polynomial 'polynomials:polynomial)
+     (bound 'integer :default 1000 :prompt "Prime bound"))
+  (let ((primes (subseq (nt-p:erastothenes-sieve bound) 1)) ; remove 2
+        ;; (d (+ 1 (/ (polynomials:degree polynomial) 2)))
+        )
+    (iter (for p in-vector primes)
+          (put-result/formula () `(= p ,p))
+          (let ((cf (make-instance 'cf-ps:sqrt-continued-fraction
+                                   :radicand (gm:-> 'finite-fields:integer-mod
+                                                    polynomial :mod p))))
+            (com-check-quasi-period cf 5000)))))

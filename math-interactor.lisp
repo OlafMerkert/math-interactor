@@ -27,7 +27,9 @@ and continued fractions of power series."
 
 ;; define a command to exit
 (define-math-interactor-command (com-quit :name "Quit") ()
-  (frame-exit *application-frame*))
+  (frame-exit *application-frame*)
+  (clear-formatted 'app)
+  (clear-formatted 'bin))
 
 ;;; hook system that allows loading data into the bin.
 (defparameter *math-interactor-load-data-hooks* nil)

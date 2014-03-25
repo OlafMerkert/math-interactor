@@ -1,7 +1,8 @@
 (in-package :math-interactor)
 
 (define-application-frame math-interactor ()
-  ()
+  ((formatted-content :initform (list (list 'app)
+                                      (list 'bin))))
   (:menu-bar menubar-cmds)
   (:panes (app :application
                :width 800 :height 600
@@ -49,18 +50,17 @@ and continued fractions of power series."
   "keep track of stored stuff in the bin, so complicated expressions
   don't have to be entered over and over again.")
 
-(defvar *formatted-content*
-  (list (list 'app)
-        (list 'bin)))
+;;; todo this should belong to the application frame
+
 
 (defun clear-formatted (pane-id)
-  (setf (cdr (assoc pane-id *formatted-content*)) nil))
+  (setf (cdr (assoc pane-id (slot-value *application-frame* 'formatted-content))) nil))
 
 (defun get-formatted (pane-id)
-  (reverse (assoc1 pane-id *formatted-content*)))
+  (reverse (assoc1 pane-id (slot-value *application-frame* 'formatted-content))))
 
 (defun put-formatted (obj pane-id)
-  (let ((fc (assoc pane-id *formatted-content*)))
+  (let ((fc (assoc pane-id (slot-value *application-frame* 'formatted-content))))
     (push obj (cdr fc))))
 
 ;;; math output helper functions

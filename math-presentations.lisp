@@ -27,7 +27,6 @@
 
 ;;; continued fractions
 (define-presentation-type cf-ps:continued-fraction ())
-(define-presentation-type cf-ps:quadratic-continued-fraction () :inherit-from 'cf-ps:continued-fraction)
 (define-presentation-type cf-ps:sqrt-continued-fraction () :inherit-from 'cf-ps:continued-fraction)
 #|(define-presentation-type cf-ps:alternative-continued-fraction () :inherit-from 'cf-ps:continued-fraction)|#
 

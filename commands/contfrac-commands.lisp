@@ -25,14 +25,14 @@
      (a 'polynomials:polynomial :prompt "a")
      (b 'polynomials:polynomial :prompt "b")
      (c 'polynomials:polynomial :prompt "c"))
-  (let ((cf (make-instance 'cf-ps:quadratic-continued-fraction
-                           :radicand poly
-                           :a a :b b :c c)))
+  (let ((cf (make-instance 'cf-ps:sqrt-continued-fraction
+                           :radicand (gm:* (gm:^ b 2) poly)
+                           :t0 a :s0 c)))
     (put-result/formula ((d poly) a b c (alpha0 (cf-ps:starting cf)))
                         `(= alpha
                             (/ (+ a (* b (sqrt d)))
                                c)
-                            (/ (+ ,a (* ,b (sqrt ,d)))
+                            (/ (+ ,a (n* ,b (sqrt ,d)))
                                ,c)
                             ,alpha0))
     (put-result/formula (cf)

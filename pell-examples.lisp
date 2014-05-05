@@ -40,12 +40,12 @@
 
 (defun poly-helper (coeff-table)
   (make-instance
-   'polynomial
+   'polynomials:polynomial
    :coefficients (map 'vector
                       (lambda (coeffs)
-                        (frac (make-instance
-                               'polynomial :var 'u
-                               :coefficients (list->array (mklist coeffs)))))
+                        (fractions:frac (make-instance
+                                         'polynomials:polynomial :var 'u
+                                         :coefficients (list->array (mklist coeffs)))))
                       coeff-table)))
 
 (defparameter other-examples

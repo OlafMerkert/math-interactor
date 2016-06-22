@@ -158,7 +158,7 @@ entire grid."
   them nicely into a grid, and return the center of the grid. See also
   `align-output-records'."
   (mvbind (h-pos x-off) (grid-align record-grid :horizontal)
-    (mvbind (v-pos y-off) (grid-align record-grid :horizontal)
+    (mvbind (v-pos y-off) (grid-align record-grid :vertical)
       (map-array (adjust-output-record-position x-combinate y-combinate)
                  record-grid h-pos v-pos)
       (values x-off y-off))))
